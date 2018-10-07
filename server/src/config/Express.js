@@ -1,7 +1,14 @@
 import express from 'express'
-import env from './environment'
+import env from './Environment'
 import { json, urlencoded } from 'body-parser'
 import path from 'path'
+
+import user from '../routes/User'
+
+
+const settingRoutes = (app) => {
+	user(app)
+}
 
 export default () => {
 	const app = express()
@@ -15,6 +22,8 @@ export default () => {
 	app.use(urlencoded({
 		extended: false
 	}))
+
+	settingRoutes(app)
 
 	app.get('*', (request, response) => {
 		response.sendFile(path.join(__dirname, '..', '..', 'resources', 'public', 'index.html'))

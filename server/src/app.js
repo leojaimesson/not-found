@@ -1,7 +1,7 @@
 import http, { request } from "http"
-import express from './config/express'
-import mongodb from './config/database'
-import env from './config/environment'
+import express from './config/Express'
+import mongodb from './config/Database'
+import env from './config/Environment'
 
 const app = express()
 
