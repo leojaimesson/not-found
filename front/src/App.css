@@ -1,4 +1,8 @@
 /* @import '~antd/dist/antd.css'; */
 .App {
-  min-height: 100vh;
+  min-height: 100%;
+}
+
+.header {
+  background: #8bc34a;
 }

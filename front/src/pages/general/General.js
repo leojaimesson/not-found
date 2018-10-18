@@ -12,12 +12,12 @@ export default class General extends Component {
         return (
             <Row gutter={24}>
                 <Col xs={{ span: 24}} lg={{ span: 12 }}>
-                    <Board>
+                    <Board height = { window.innerHeight * 0.5 }>
                         <Bar />
                     </Board>
                 </Col>
                 <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                    <Board>
+                    <Board height = { window.innerHeight * 0.5 }>
                         <Bar />
                     </Board>
                 </Col>
