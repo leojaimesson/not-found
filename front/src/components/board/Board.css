@@ -1,0 +1,8 @@
+.board {
+    padding: 1%;
+    background: #f0f1f5;
+    height: 390px;
+    width: 100%;
+    /* display: inline-block; */
+    /* position: relative; */
+}
