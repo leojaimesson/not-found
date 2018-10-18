@@ -3,7 +3,7 @@ import env from './Environment'
 import { json, urlencoded } from 'body-parser'
 import path from 'path'
 
-import user from '../routes/User'
+import user from '../routes/UserRoute'
 
 
 const settingRoutes = (app) => {
