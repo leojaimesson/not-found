@@ -2,11 +2,15 @@
   "name": "not-found",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+	"main": "src/index.js",
+	"prodMain": "dist/index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js",
-    "prod": "babel src -s -d dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+		"build": "babel src -s -d dist",
+		"clean:modules": "rm -rf node_modules && rm yarn.lock && yarn",
+		"clean:dist": "yarn prebuild",
+		"prebuild": "rm -rf dist && mkdir dist",
+		"development": "nodemon --exec babel-node src/index.js",
+		"production": "yarn build && dist && pm2 start"
   },
   "repository": {
     "type": "git",
