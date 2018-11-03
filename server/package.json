@@ -11,6 +11,7 @@
     "prebuild": "rm -rf dist && mkdir dist",
     "development": "nodemon --exec babel-node src/index.js",
     "production": "yarn build && dist && pm2 start",
+    "env:dev":"./scripts/env-dev.sh",
     "lint": "./node_modules/.bin/eslint src/**/*.js"
   },
   "repository": {
