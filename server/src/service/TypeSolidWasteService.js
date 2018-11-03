@@ -8,7 +8,6 @@ const verifyExistsTypeSolidWasteRegistered = async typeSolidWaste => (await Type
 export default {
   save: async (typeSolidWaste) => {
     if (await verifyExistsTypeSolidWasteRegistered(typeSolidWaste)) {
-
       return TypeSolidWaste.create(typeSolidWaste);
     }
     throw new DuplicateTypeSolideWasted('Type solid waste already registered on system!');
