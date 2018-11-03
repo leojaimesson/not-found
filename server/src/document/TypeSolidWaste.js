@@ -17,6 +17,10 @@ const TypeSolidWasteSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model('TypeSolidWaste', TypeSolidWasteSchema);
