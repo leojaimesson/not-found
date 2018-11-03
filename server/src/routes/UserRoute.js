@@ -8,5 +8,5 @@ export default (app) => {
   router.get('/', controller.getByEmail);
   router.get('/', controller.getAll);
 
-  app.use('/user', router);
+  app.use('/users', router);
 };
