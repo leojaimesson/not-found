@@ -15,8 +15,8 @@ export default {
     uri: process.env.MONGO_URI,
   },
   pm2: {
-    instances: process.env.INSTANCES || DEFAULT_PM2_INSTANCES,
-    autorestar: process.env.AUTORESTART || DEFAULT_PM2_AUTORESTART,
-    maxMemoryRestart: process.env.MAX_MEMORY_RESTART || DEFAULT_PM2_MAX_MEMORY_RESTART,
+    instances: process.env.PM2_INSTANCES || DEFAULT_PM2_INSTANCES,
+    autorestar: process.env.PM2_AUTORESTART || DEFAULT_PM2_AUTORESTART,
+    maxMemoryRestart: process.env.PM2_MAX_MEMORY_RESTART || DEFAULT_PM2_MAX_MEMORY_RESTART,
   },
 };

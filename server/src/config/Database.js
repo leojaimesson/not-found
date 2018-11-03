@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { log } from 'console';
 
+mongoose.Promise = global.Promise;
+
 export default (uri) => {
   log(uri);
   mongoose.connect(uri, {

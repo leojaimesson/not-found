@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVER_PORT=3000
-MONGO_URI=http://localhost:27017
+MONGO_URI=mongodb://localhost:27017/notfound
 PM2_INSTANCES=1
 PM2_AUTORESTART=true
 PM2_MAX_MEMORY_RESTART=1G
