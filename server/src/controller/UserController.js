@@ -4,11 +4,17 @@ import service from '../service/UserService';
 export default {
   save: async (request, response) => {
     try {
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+      } = request.body;
       const user = await service.save({
-        firstName: request.body.firstName,
-        lastName: request.body.lastName,
-        email: request.body.email,
-        password: request.body.password,
+        firstName,
+        lastName,
+        email,
+        password,
       });
 
       user.password = undefined;

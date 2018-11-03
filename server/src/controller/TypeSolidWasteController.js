@@ -4,11 +4,17 @@ import service from '../service/TypeSolidWasteService';
 export default {
   save: async (request, response) => {
     try {
+      const {
+        name,
+        description,
+        recyclable,
+        reutilable,
+      } = request.body;
       const typeSolidWaste = await service.save({
-        name: request.body.name,
-        description: request.body.description,
-        recyclable: request.body.recyclable,
-        reutilable: request.body.reutilable,
+        name,
+        description,
+        recyclable,
+        reutilable,
       });
       response.status(HttpStatus.CREATED).json(typeSolidWaste);
     } catch (error) {

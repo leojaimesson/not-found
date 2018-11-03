@@ -9,12 +9,7 @@ const verifyExistsUserRegistered = async user => (await User.findOne({
 export default {
   save: async (user) => {
     if (await verifyExistsUserRegistered(user)) {
-      return User.create({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-      });
+      return User.create(user);
     }
     throw new DuplicateUserError('User already registered on system!');
   },
