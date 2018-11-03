@@ -6,5 +6,5 @@ export default (app) => {
 
   router.post('/', controller.save);
 
-  app.use('/user', router);
+  app.use('/type-solid-waste', router);
 };
