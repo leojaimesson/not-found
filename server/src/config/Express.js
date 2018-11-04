@@ -1,10 +1,10 @@
 import express from 'express';
 import { json, urlencoded } from 'body-parser';
 import path from 'path';
+import cors from 'cors';
 
 import env from './Environment';
 import user from '../routes/UserRoute';
-
 
 const settingRoutes = (app) => {
   user(app);
@@ -22,6 +22,8 @@ export default () => {
   app.use(urlencoded({
     extended: false,
   }));
+
+  app.use(cors());
 
   settingRoutes(app);
 
