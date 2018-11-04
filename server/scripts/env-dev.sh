@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVER_PORT=3000
+SERVER_PORT=3001
 MONGO_URI=mongodb://localhost:27017/notfound
 PM2_INSTANCES=1
 PM2_AUTORESTART=true
