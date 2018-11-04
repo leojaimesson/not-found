@@ -4,21 +4,14 @@ import service from '../service/UserService';
 export default {
   save: async (request, response) => {
     try {
-      const {
-        firstName,
-        lastName,
-        email,
-        password,
-      } = request.body;
-      const user = await service.save({
-        firstName,
-        lastName,
-        email,
-        password,
-      });
-
+      const userBody = {
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        email: request.body.email,
+        password: request.body.password,
+      };
+      const user = await service.save(userBody);
       user.password = undefined;
-
       response.status(HttpStatus.CREATED).json(user);
     } catch (error) {
       response.status(error.statusCode).json(error);
@@ -29,7 +22,6 @@ export default {
     if (!request.query.email) {
       next();
     }
-
     try {
       const { email } = request.query;
       const user = await service.retrieveByEmail(email);
