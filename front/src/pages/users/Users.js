@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Card, Table, Modal } from 'antd';
-
+import { Table, Modal, Row, Col, Button } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserRegister from '../../components/user-register/UserRegister';
 
 export default class Users extends Component {
@@ -40,11 +40,11 @@ export default class Users extends Component {
             dataIndex: 'email',
             key: 'email',
         }, {
-            title: 'Action',
+            title: 'Ação',
             key: 'action',
             render: (text, record) => (
                 <span>
-                    <a href="javascript:;">Delete</a>
+                    <a href>Excluir</a>
                 </span>
             ),
         }];
@@ -113,21 +113,21 @@ export default class Users extends Component {
         }];
 
         return (
-            <Card
-                title="Usuários"
-                type="inner"
-                extra={<a href="#" onClick={this.showModal}>Adicionar</a>}
-            >
+            <>
+                <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
+                    <Col><h2>Cadastrar Usuário</h2></Col>
+                    <Col><Button type="primary" onClick={this.showModal}>Adicionar</Button></Col>
+                </Row>
                 <Modal
                     title="Cadastrar Usuário"
                     visible={this.state.visible}
                     okText={"Cadastrar"}
                     onCancel={this.handleCancel}
                 >
-                    <UserRegister/>
+                    <UserRegister />
                 </Modal>
-                <Table columns={columns} dataSource={data} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} />
-            </Card>
+                <Table columns={columns} dataSource={data} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} style={{ background: "white" }} />
+            </>
         );
     }
 }

@@ -49,6 +49,8 @@ export default class Base extends Component {
             </Header>
             <Content style={{ padding: '20px 14px', boxSizing: 'border-box' }}>
                 {this.props.content}
+                <br /><br />
+
             </Content>
         </Layout>
     );
