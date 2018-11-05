@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import { Row, Col } from 'antd';
 
-import 'antd/lib/grid/style/index.css';
-
 import Board from '../../components/board/Board';
 import Bar from '../../components/charts/bar/Bar';
 
