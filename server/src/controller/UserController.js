@@ -31,8 +31,28 @@ export default {
     }
   },
 
-  getAll: async (request, response) => {
-    const users = await service.retrieveAll();
-    response.status(HttpStatus.ACCEPTED).json(users);
+  getAll: async (request, response, next) => {
+    if (request.query.email) {
+      next();
+    }
+    try {
+      const users = await service.retrieveAll();
+      response.status(HttpStatus.ACCEPTED).json(users);
+    } catch (error) {
+      response.status(error.statusCode).json(error);
+    }
+  },
+
+  deleteById: async (request, response, next) => {
+    try {
+      if (!request.query.id) {
+        next();
+      }
+      const { id } = request.query;
+      const user = await service.delete(id);
+      response.status(HttpStatus.OK).json(user);
+    } catch (error) {
+      response.status(error.statusCode).json(error);
+    }
   },
 };

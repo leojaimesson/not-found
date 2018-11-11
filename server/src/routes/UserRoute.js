@@ -5,8 +5,9 @@ export default (app) => {
   const router = express.Router();
 
   router.post('/', controller.save);
-  router.get('/', controller.getByEmail);
+  router.delete('/', controller.deleteById);
   router.get('/', controller.getAll);
+  router.get('/', controller.getByEmail);
 
   app.use('/users', router);
 };
