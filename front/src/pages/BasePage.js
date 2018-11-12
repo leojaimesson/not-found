@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 
 import { Layout, Icon, Drawer, Avatar } from 'antd';
 
-import './Base.css';
-
 const { Header, Content } = Layout;
 
-export default class Base extends Component {
+export default class BasePage extends Component {
 
     showDrawer = () => {
         this.setState({
@@ -39,7 +37,7 @@ export default class Base extends Component {
                 visible={this.state.visible}>
                 {this.props.menu}
             </Drawer>
-            <Header className="header">
+            <Header style={{ background: '#8bc34a', marginBottom: '25px' }}>
                 <Icon
                     className="trigger"
                     type="menu-fold"
@@ -56,7 +54,7 @@ export default class Base extends Component {
     );
 }
 
-Base.propTypes = {
+BasePage.propTypes = {
     menu: PropTypes.node,
     content: PropTypes.node
 }

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import Base from './pages/base/Base';
-import General from './pages/general/General';
-import Users from './pages/users/Users';
+import BasePage from './pages/BasePage';
+import GeneralPage from './pages/GeneralPage';
+import UsersPage from './pages/UsersPage';
+import TypesSolidWastePage from './pages/TypesSolidWastePage';
 
 const Teste = () => (
     <div>
@@ -15,20 +16,22 @@ const Teste = () => (
 export default class Routes extends Component {
     render = () => (
         <Router>
-            <Base
+            <BasePage
                 menu={
                     <>
                         <p><Link to="/">Visão Geral</Link></p>
                         <p><Link to="/teste">Teste</Link></p>
                         <p><Link to="/usuarios">usuários</Link></p>
+                        <p><Link to="/typos-residuos-solidos">Tipos de Residuos solidos</Link></p>
                     </>
                 }
 
                 content={
                     <>
-                        <Route exact path="/" component={General} />
+                        <Route exact path="/" component={GeneralPage} />
                         <Route exact path="/teste" component={Teste} />
-                        <Route exact path="/usuarios" component={Users} />
+                        <Route exact path="/usuarios" component={UsersPage} />
+                        <Route exact path="/typos-residuos-solidos" component={TypesSolidWastePage} />
                     </>
                 }
             />

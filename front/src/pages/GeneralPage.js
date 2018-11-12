@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 import { Row, Col } from 'antd';
 
-import Board from '../../components/board/Board';
-import Bar from '../../components/charts/bar/Bar';
+import Board from '../components/board/Board';
+import Bar from '../components/charts/bar/Bar';
 
-export default class General extends Component {
+export default class GeneralPage extends Component {
     render() {
         return (
             <Row gutter={24}>
