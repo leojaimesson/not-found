@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Modal, Row, Col, Button, Form, Input, Checkbox } from 'antd';
+import { Table, Modal, Row, Col, Button, Form, Input, Checkbox, Tag } from 'antd';
 
 import TypeSolidWastClient from '../api/TypeSolidWastClient';
 import DataList from '../helpers/DataList';
@@ -13,11 +13,10 @@ class TypesSolidWastePage extends Component {
         super(props);
         this.typeSolidWastClient = new TypeSolidWastClient('http://localhost:3001/types-solid-waste');
         this.state = {
-            confirmDirty: false,
             modalVisible: false,
             visibleModalExcluir: false,
-            checkRecyclable: false,
-            chckReutilable: false,
+            isRecyclable: false,
+            isReutilable: false,
             typesSolidWaste: []
         };
     }
@@ -25,25 +24,25 @@ class TypesSolidWastePage extends Component {
     async componentWillMount() {
         const response = await this.typeSolidWastClient.getAll();
         this.setState({
-            typesSolidWaste: [],
+            typesSolidWaste: DataList.toTypesSolidWasteData(response.data),
         });
     }
 
-    modalExcluir(idTypeSolidWast) {
+    modalExcluir(idTypeSolidWaste) {
         Modal.error({
-            title: 'Deseja realmente excluir este usuário?',
+            title: 'Deseja realmente excluir este tipo de residuo?',
             cancelText: 'Cancelar',
             okCancel: true,
             okText: 'Excluir',
             onOk: async () => {
-                const response = await this.typeSolidWastClient.remove(idTypeSolidWast);
+                const response = await this.typeSolidWastClient.remove(idTypeSolidWaste);
                 console.log(response)
                 this.setState({
                     typesSolidWaste: this.state.typesSolidWaste.filter((typeSolidWast) => typeSolidWast.key !== response.data._id)
                 })
             }
         });
-        console.log(idTypeSolidWast)
+        console.log(idTypeSolidWaste)
     }
 
     showModal = () => {
@@ -56,19 +55,21 @@ class TypesSolidWastePage extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll(async (err, values) => {
             if (!err) {
-                const user = {
-                    firstName: values.firstName,
-                    lastName: values.lastName,
-                    email: values.email,
-                    password: values.password
+                const typeSolidWaste = {
+                    name: values.name,
+                    description: values.description,
+                    recyclable: this.state.isRecyclable,
+                    reutilable: this.state.isReutilable,
                 };
-                const response = await this.typeSolidWastClient.save(user);
+                const response = await this.typeSolidWastClient.save(typeSolidWaste);
                 this.setState({
-                    typesSolidWaste: [...this.state.typesSolidWaste, { key: response.data._id, name: response.data.firstName, email: response.data.email }]
+                    typesSolidWaste: [...this.state.typesSolidWaste, { key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data) }]
                 })
             }
             this.setState({
                 modalVisible: false,
+                isRecyclable: false,
+                isReutilable: false,
             });
         });
     }
@@ -77,40 +78,20 @@ class TypesSolidWastePage extends Component {
         console.log(e);
         this.setState({
             modalVisible: false,
+            isRecyclable: false,
+            isReutilable: false,
         });
-    }
-
-    handleConfirmBlur = (e) => {
-        const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-    }
-
-    compareToFirstPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('As duas senhas precisam ser iguais!');
-        } else {
-            callback();
-        }
-    }
-
-    validateToNextPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], { force: true });
-        }
-        callback();
     }
 
     handleChangeCheckRecyclable = (e) => {
         this.setState({
-            checkRecyclable: e.target.checked,
+            isRecyclable: e.target.checked,
         });
     }
 
     handleChangeCheckReutilable = (e) => {
         this.setState({
-            checkReutilable: e.target.checked,
+            isReutilable: e.target.checked,
         });
     }
 
@@ -145,9 +126,18 @@ class TypesSolidWastePage extends Component {
             dataIndex: 'name',
             key: 'name'
         }, {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
+            title: 'Descrição',
+            dataIndex: 'description',
+            key: 'description',
+        }, {
+            title: 'Tags',
+            key: 'tags',
+            dataIndex: 'tags',
+            render: tags => (
+                <span>
+                    {tags.map(tag => <Tag color="blue" key={tag}>{tag}</Tag>)}
+                </span>
+            )
         }, {
             title: 'Ação',
             key: 'action',
