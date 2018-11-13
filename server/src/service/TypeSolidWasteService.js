@@ -1,5 +1,9 @@
 import TypeSolidWaste from '../document/TypeSolidWaste';
-import DuplicateTypeSolideWasted from '../exception/DuplicateTypeSolidWastedRegistered';
+import InternalError from '../exception/InternalError';
+import MissingPropertiesError from '../exception/MissingPropertiesError';
+import DuplicateTypeSolideWasteError from '../exception/DuplicateTypeSolidWasteError';
+
+import helpers from '../helpers/document';
 
 const verifyExistsTypeSolidWasteRegistered = async typeSolidWaste => (await TypeSolidWaste.findOne({
   name: typeSolidWaste.name,
@@ -7,9 +11,36 @@ const verifyExistsTypeSolidWasteRegistered = async typeSolidWaste => (await Type
 
 export default {
   save: async (typeSolidWaste) => {
-    if (await verifyExistsTypeSolidWasteRegistered(typeSolidWaste)) {
-      return TypeSolidWaste.create(typeSolidWaste);
+    try {
+      if (!helpers.containsProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable'])) {
+        throw new MissingPropertiesError('Missing properties in type solid waste!', helpers.missingProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable']));
+      }
+      if (await verifyExistsTypeSolidWasteRegistered(typeSolidWaste)) {
+        return TypeSolidWaste.create(typeSolidWaste);
+      }
+      throw new DuplicateTypeSolideWasteError('Type solid waste already registered on system!');
+    } catch (error) {
+      throw new InternalError(error.message);
     }
-    throw new DuplicateTypeSolideWasted('Type solid waste already registered on system!');
+  },
+
+  retrieveAll: () => {
+    try {
+      return TypeSolidWaste.find().exec();
+    } catch (error) {
+      throw new InternalError(error.message);
+    }
+  },
+
+  delete: async (id) => {
+    try {
+      const typeSolidWaste = await TypeSolidWaste.findByIdAndRemove(id).exec();
+      if (typeSolidWaste != null) {
+        return typeSolidWaste;
+      }
+      throw new DuplicateTypeSolideWasteError(`Type solid waste with id ${id} not found on system!`);
+    } catch (error) {
+      throw new InternalError(error.message);
+    }
   },
 };
