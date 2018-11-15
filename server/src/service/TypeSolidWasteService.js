@@ -1,6 +1,7 @@
 import TypeSolidWaste from '../document/TypeSolidWaste';
 import InternalError from '../exception/InternalError';
 import MissingPropertiesError from '../exception/MissingPropertiesError';
+import TypeSolidWasteNotFoundError from '../exception/TypeSolidWasteNotFoundError';
 import DuplicateTypeSolideWasteError from '../exception/DuplicateTypeSolidWasteError';
 
 import helpers from '../helpers/document';
@@ -38,7 +39,7 @@ export default {
       if (typeSolidWaste != null) {
         return typeSolidWaste;
       }
-      throw new DuplicateTypeSolideWasteError(`Type solid waste with id ${id} not found on system!`);
+      throw new TypeSolidWasteNotFoundError(`Type solid waste with id ${id} not found on system!`);
     } catch (error) {
       throw new InternalError(error.message);
     }

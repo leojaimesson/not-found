@@ -6,10 +6,12 @@ import cors from 'cors';
 import env from './Environment';
 import user from '../routes/UserRoute';
 import typeSolidWaste from '../routes/TypeSolidWasteRoute';
+import solidWasteCollected from '../routes/SolidWasteCollectedRoute';
 
 const settingRoutes = (app) => {
   user(app);
   typeSolidWaste(app);
+  solidWasteCollected(app);
 };
 
 export default () => {

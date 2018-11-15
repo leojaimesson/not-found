@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const SolidWasteCollectedSchema = new mongoose.Schema({
   typeWasted: {
     type: mongoose.Schema.ObjectId,
-    ref: 'TypeSolidWasted',
+    ref: 'TypeSolidWaste',
     required: true,
   },
   quantityCollected: {

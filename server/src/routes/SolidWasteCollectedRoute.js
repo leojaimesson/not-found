@@ -5,6 +5,8 @@ export default (app) => {
   const router = express.Router();
 
   router.post('/', controller.save);
+  router.delete('/', controller.deleteById);
+  router.get('/', controller.getAll);
 
-  app.use('/solid-wasted-collecteds', router);
+  app.use('/solid-waste-collected', router);
 };
