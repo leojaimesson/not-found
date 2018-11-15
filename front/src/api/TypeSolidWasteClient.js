@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default class UserClient {
+export default class TypeSolidWasteClient {
 
     constructor(url) {
         this.url = url;
@@ -14,8 +14,8 @@ export default class UserClient {
     }
 
 
-    async save(user) {
-        const response = await this.request.post('/', JSON.stringify(user));
+    async save(typeSolidWaste) {
+        const response = await this.request.post('/', JSON.stringify(typeSolidWaste));
         return response;
     }
 

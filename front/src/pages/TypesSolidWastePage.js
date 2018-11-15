@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Modal, Row, Col, Button, Form, Input, Checkbox, Tag } from 'antd';
 
-import TypeSolidWastClient from '../api/TypeSolidWastClient';
+import TypeSolidWasteClient from '../api/TypeSolidWasteClient';
 import DataList from '../helpers/DataList';
 
 const FormItem = Form.Item;
@@ -11,7 +11,7 @@ class TypesSolidWastePage extends Component {
 
     constructor(props) {
         super(props);
-        this.typeSolidWastClient = new TypeSolidWastClient('http://localhost:3001/types-solid-waste');
+        this.typeSolidWasteClient = new TypeSolidWasteClient('http://localhost:3001/types-solid-waste');
         this.state = {
             modalVisible: false,
             visibleModalExcluir: false,
@@ -22,9 +22,9 @@ class TypesSolidWastePage extends Component {
     }
 
     async componentWillMount() {
-        const response = await this.typeSolidWastClient.getAll();
+        const response = await this.typeSolidWasteClient.getAll();
         this.setState({
-            typesSolidWaste: DataList.toTypesSolidWasteData(response.data),
+            typesSolidWaste: response ? DataList.toTypesSolidWasteData(response.data) : [],
         });
     }
 
@@ -35,7 +35,7 @@ class TypesSolidWastePage extends Component {
             okCancel: true,
             okText: 'Excluir',
             onOk: async () => {
-                const response = await this.typeSolidWastClient.remove(idTypeSolidWaste);
+                const response = await this.typeSolidWasteClient.remove(idTypeSolidWaste);
                 console.log(response)
                 this.setState({
                     typesSolidWaste: this.state.typesSolidWaste.filter((typeSolidWast) => typeSolidWast.key !== response.data._id)
@@ -61,7 +61,7 @@ class TypesSolidWastePage extends Component {
                     recyclable: this.state.isRecyclable,
                     reutilable: this.state.isReutilable,
                 };
-                const response = await this.typeSolidWastClient.save(typeSolidWaste);
+                const response = await this.typeSolidWasteClient.save(typeSolidWaste);
                 this.setState({
                     typesSolidWaste: [...this.state.typesSolidWaste, { key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data) }]
                 })

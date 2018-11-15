@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-export default class TypeSolidWastClient {
+export default class SolidWasteCollectedClient {
 
     constructor(url) {
         this.url = url;
         this.request = axios.create({
             baseURL: url,
-            timeout: 10000,
+            timeout: 30000,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -14,8 +14,8 @@ export default class TypeSolidWastClient {
     }
 
 
-    async save(typeSolidWast) {
-        const response = await this.request.post('/', JSON.stringify(typeSolidWast));
+    async save(solidWasteCollected) {
+        const response = await this.request.post('/', JSON.stringify(solidWasteCollected));
         return response;
     }
 
