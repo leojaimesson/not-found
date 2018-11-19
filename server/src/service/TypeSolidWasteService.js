@@ -13,8 +13,8 @@ const verifyExistsTypeSolidWasteRegistered = async typeSolidWaste => (await Type
 export default {
   save: async (typeSolidWaste) => {
     try {
-      if (!helpers.containsProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable'])) {
-        throw new MissingPropertiesError('Missing properties in type solid waste!', helpers.missingProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable']));
+      if (!helpers.containsProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable', 'color'])) {
+        throw new MissingPropertiesError('Missing properties in type solid waste!', helpers.missingProperties(typeSolidWaste, ['name', 'description', 'recyclable', 'reutilable', 'color']));
       }
       if (await verifyExistsTypeSolidWasteRegistered(typeSolidWaste)) {
         return TypeSolidWaste.create(typeSolidWaste);

@@ -7,11 +7,13 @@ import env from './Environment';
 import user from '../routes/UserRoute';
 import typeSolidWaste from '../routes/TypeSolidWasteRoute';
 import solidWasteCollected from '../routes/SolidWasteCollectedRoute';
+import data from '../routes/DataRoute';
 
 const settingRoutes = (app) => {
   user(app);
   typeSolidWaste(app);
   solidWasteCollected(app);
+  data(app);
 };
 
 export default () => {

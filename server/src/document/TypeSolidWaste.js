@@ -17,6 +17,10 @@ const TypeSolidWasteSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  color: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -9,12 +9,14 @@ export default {
         description,
         recyclable,
         reutilable,
+        color,
       } = request.body;
       const typeSolidWaste = await service.save({
         name,
         description,
         recyclable,
         reutilable,
+        color,
       });
       response.status(HttpStatus.CREATED).json(typeSolidWaste);
     } catch (error) {
