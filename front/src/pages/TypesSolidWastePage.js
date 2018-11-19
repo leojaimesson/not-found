@@ -60,6 +60,7 @@ class TypesSolidWastePage extends Component {
                     description: values.description,
                     recyclable: this.state.isRecyclable,
                     reutilable: this.state.isReutilable,
+                    color: values.color
                 };
                 const response = await this.typeSolidWasteClient.save(typeSolidWaste);
                 this.setState({
@@ -142,7 +143,7 @@ class TypesSolidWastePage extends Component {
             title: 'Ação',
             key: 'action',
             render: (text, record) => (
-                <Button type='danger' onClick={this.modalExcluir.bind(this, text.key)}>Excluir</Button>
+                <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
             ),
         }];
 
@@ -150,7 +151,7 @@ class TypesSolidWastePage extends Component {
             <>
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
                     <Col><h2>Cadastrar Tipo de Residuo Solido</h2></Col>
-                    <Col><Button type="primary" onClick={this.showModal}>Adicionar</Button></Col>
+                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex:"999"}}onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
                     title="Cadastrar Usuário"
@@ -179,6 +180,18 @@ class TypesSolidWastePage extends Component {
                                 <Input />
                             )}
                         </FormItem>
+
+                        <FormItem {...formItemLayout} label="Cor">
+                            {getFieldDecorator('color', {
+                                rules: [{
+                                    required: true, message: 'cor',
+                                }],
+                                initialValue: '#ffee00'
+                            })(
+                                <Input type='color' onChange={(e) => {console.log(e.target.value)}}/>
+                            )}
+                        </FormItem>
+                        
                         <FormItem {...formTailLayout}>
                             <Checkbox onClick={this.handleChangeCheckRecyclable}>
                                 Reciclável

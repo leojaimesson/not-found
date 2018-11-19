@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 
-class GeneralPage extends Component {
+class AnalyzeCollectedWastesPage extends Component {
 
     constructor(props) {
         super(props);
@@ -74,13 +74,31 @@ class GeneralPage extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        const heightBoard = window.innerHeight * 0.60;
+        const heightBoard = window.innerHeight * 0.5;
+
         return (
             <>
-                <Row type="flex" justify="space-between" align="middle" gutter={24} style={{background: 'white', margin: '0px', padding: '10px 0px'}}>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}><h2 style={{margin: '0px'}}>Visão geral</h2></Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
+                    <Col xs={{ span: 24 }} lg={{ span: 6 }}><h2 style={{ margin: '0px' }}>Análise de Coletas</h2></Col>
+                    <Col xs={{ span: 24 }} lg={{ span: 18 }}>
                         <Form layout="inline" onSubmit={this.handleSubmit} style={{ float: 'right' }}>
+                            <FormItem>
+                                <span>Tipo de residuo</span>
+                            </FormItem>
+                            <FormItem>
+                                {getFieldDecorator('type', {
+                                    rules: [{ required: true, message: 'O tipo de residuo é obrigatorio!' }],
+                                    initialValue: ''
+                                })(
+                                    <Select style={{ width: 180 }}>
+                                        <Option value="">Todos</Option>
+
+                                        <Option value="WEEK">Semana</Option>
+                                        <Option value="MONTH">Mês</Option>
+                                        <Option value="YEAR">Ano</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
                             <FormItem>
                                 <span>Periodo</span>
                             </FormItem>
@@ -118,24 +136,24 @@ class GeneralPage extends Component {
                 </Row>
 
                 <Row gutter={24}>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                    <Col xs={{ span: 24 }} lg={{ span: 24 }}>
                         <Board>
                             <h3 style={{ color: '#618833' }}>Residuos produzidos</h3>
                             <hr style={{ marginBottom: '25px' }} />
-                            <Pie data={data} width={600} height={heightBoard * 0.9} />
+                            <Pie data={data} width={parseInt(300, 10)} height={parseInt(heightBoard * 0.2, 10)} />
                         </Board>
                     </Col>
 
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                         <Row gutter={24}>
                             <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={window.innerHeight * 0.30}>
+                                <Board height={parseInt(window.innerHeight * 0.30, 10)}>
                                     <h3 style={{ color: '#618833' }}>Volume coletado</h3>
                                     <hr style={{ marginBottom: '25px' }} />
                                 </Board>
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={window.innerHeight * 0.30}>
+                                <Board height={parseInt(window.innerHeight * 0.30, 10)}>
                                     <h3 style={{ color: '#618833' }}>Volume coletado</h3>
                                 </Board>
                             </Col>
@@ -153,4 +171,4 @@ class GeneralPage extends Component {
     }
 }
 
-export default Form.create()(GeneralPage);
+export default Form.create()(AnalyzeCollectedWastesPage);

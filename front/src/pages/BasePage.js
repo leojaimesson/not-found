@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Layout, Icon, Drawer, Avatar, Menu } from 'antd';
+import { Layout, Icon, Drawer, Avatar, Row, Col } from 'antd';
 
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -18,6 +18,15 @@ export default class BasePage extends Component {
             visible: false,
         });
     };
+
+    // dropMenu = () => (
+    //     <Menu>
+    //         <Menu.Item key="1"><Icon type="user" />1st menu item</Menu.Item>
+    //         <Menu.Item key="2"><Icon type="user" />2nd menu item</Menu.Item>
+    //         <Menu.Item key="3"><Icon type="user" />3rd item</Menu.Item>
+    //     </Menu>
+    // );
+
 
     constructor(props) {
         super(props);
@@ -54,15 +63,22 @@ export default class BasePage extends Component {
                 {this.props.menu}
             </Sider>
             <Layout>
-                <Header style={{ background: '#8bc34a', position: 'fixed', width: '100%', padding: "0px 14px" }}>
-                    <Icon
-                        className="trigger"
-                        type="menu-fold"
-                        onClick={this.showDrawer}
-                    />
-                    <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>U</Avatar>
+                <Header style={{ background: '#8bc34a', padding: "0px 14px" }}>
+                    <Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
+                        <Col><Icon className="trigger" type="menu-fold" onClick={this.showDrawer} /></Col>
+                        <Col><Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
+                            {/* <Dropdown overlay={this.dropMenu} trigger={['click']}> */}
+                                {/* <div> */}
+                                    <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf', display: 'block' }}>U</Avatar>
+                                    <span style={{ margin: '0px 2px 0px 8px' }}>Leo Jaimesson</span>
+                                    <Icon type="down"/>
+                                {/* </div> */}
+                            {/* </Dropdown> */}
+                        </Row>
+                        </Col>
+                    </Row>
                 </Header>
-                <Content style={{ padding: '20px 14px', boxSizing: 'border-box', height: '100%', overflow: 'auto', margin: '65px 0px 0px 0px' }}>
+                <Content style={{ padding: '20px 14px 45px 14px', boxSizing: 'border-box', height: '100%', overflow: 'auto' }}>
                     {this.props.content}
                 </Content>
                 <Footer style={{ textAlign: 'center', bottom: '0px', width: '100%', background: '#618833', padding: '10px ' }}>

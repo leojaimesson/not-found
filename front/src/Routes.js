@@ -9,6 +9,8 @@ import GeneralPage from './pages/GeneralPage';
 import UsersPage from './pages/UsersPage';
 import TypesSolidWastePage from './pages/TypesSolidWastePage';
 import SolidWasteCollectedPage from './pages/SolidWasteCollectedPage';
+import AnalysesPage from './pages/AnalyzesPage';
+import AnalyzeCollectedWastesPage from './pages/AnalyzeCollectedWastesPage';
 
 const Teste = () => (
     <div>
@@ -21,31 +23,26 @@ export default class Routes extends Component {
         <Router>
             <BasePage
                 menu={
-
-                    // <p></p>
-                    // <p><Link to="/teste">Teste</Link></p>
-                    // <p><Link to="/usuarios">usuários</Link></p>
-                    // <p><Link to="/typos-residuos-solidos">Tipos de Residuos solidos</Link></p>
-                    // <p><Link to="/solid-waste-collected">Coletas</Link></p>
-
-
-                    <Menu mode="inline" defaultSelectedKeys={['4']} style={{ zIndex: '999' }}>
-
+                    <Menu mode="inline" style={{ zIndex: '999' }}>
                         <Menu.Item key="1">
-                            <Icon type="user" />
+                            <Icon type="home" />
                             <Link to="/" className="nav-text">Visão Geral</Link>
                         </Menu.Item>
                         <Menu.Item key="2">
                             <Icon type="user" />
-                            <Link to="/users" className="nav-text">Usuários</Link>
+                            <Link to="/usuarios" className="nav-text">Usuários</Link>
                         </Menu.Item>
                         <Menu.Item key="3">
-                            <Icon type="user" />
-                            <Link to="/types-solid-waste" className="nav-text">Residuos Existentes</Link>
+                            <Icon type="tag" />
+                            <Link to="/tipos-residuos-solidos" className="nav-text">Tipos de Resíduos Sólidos</Link>
                         </Menu.Item>
                         <Menu.Item key="4">
-                            <Icon type="user" />
-                            <Link to="/solid-waste-collected" className="nav-text">Residuos Coletados</Link>
+                            <Icon type="delete" />
+                            <Link to="/coletas" className="nav-text">Coletas</Link>
+                        </Menu.Item>
+                        <Menu.Item key="5">
+                            <Icon type="line-chart" />
+                            <Link to="/analises" className="nav-text">Análises</Link>
                         </Menu.Item>
                     </Menu>
                 }
@@ -53,9 +50,11 @@ export default class Routes extends Component {
                 content={
                     <>
                         <Route exact path="/" component={GeneralPage} />
-                        <Route exact path="/users" component={UsersPage} />
-                        <Route exact path="/types-solid-waste" component={TypesSolidWastePage} />
-                        <Route exact path="/solid-waste-collected" component={SolidWasteCollectedPage} />
+                        <Route exact path="/usuarios" component={UsersPage} />
+                        <Route exact path="/tipos-residuos-solidos" component={TypesSolidWastePage} />
+                        <Route exact path="/coletas" component={SolidWasteCollectedPage} />
+                        <Route exact path="/analises" component={AnalysesPage} />
+                        <Route exact path="/analises/s" component={AnalyzeCollectedWastesPage} />
                     </>
                 }
             />

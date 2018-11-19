@@ -126,7 +126,7 @@ class UsersPage extends Component {
             title: 'Ação',
             key: 'action',
             render: (text, record) => (
-                <Button type='danger' onClick={this.modalExcluir.bind(this, text.key)}>Excluir</Button>
+                <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
             ),
         }];
 
@@ -134,7 +134,7 @@ class UsersPage extends Component {
             <>
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
                     <Col><h2>Cadastrar Usuário</h2></Col>
-                    <Col><Button type="primary" onClick={this.showModal}>Adicionar</Button></Col>
+                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex:"999"}}onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
                     title="Cadastrar Usuário"
