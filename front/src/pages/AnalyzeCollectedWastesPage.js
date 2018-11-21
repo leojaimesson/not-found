@@ -1,66 +1,211 @@
 import React, { Component } from 'react';
 
-import { Row, Col, Button, Form, Select, InputNumber } from 'antd';
+import { Row, Col, Button, Form, Select, InputNumber, DatePicker, Divider } from 'antd';
 
 import Board from '../components/board/Board';
 
-import { Pie } from 'react-chartjs-2';
+import { ResponsiveBar } from '@nivo/bar';
+
+import { ResponsiveStream } from '@nivo/stream';
+
+import { ResponsivePie } from '@nivo/pie';
 
 import DataClient from '../api/DataClient';
+import TypeSolidWasteClient from '../api/TypeSolidWasteClient';
 
 const FormItem = Form.Item;
 
 const Option = Select.Option;
-
 
 class AnalyzeCollectedWastesPage extends Component {
 
     constructor(props) {
         super(props);
         this.dataClient = new DataClient('http://localhost:3001/datas');
+        this.typeSolidWasteClient = new TypeSolidWasteClient('http://localhost:3001/types-solid-waste');
         this.state = {
-            datasets: [],
-            labels: [],
+            typesSolidWaste: [],
+            layoutAll: true,
+            datas: [],
+            colors: [],
+            keys: [],
+            pieData: [],
+            totalKg: 0,
+            streamDatas: []
         }
     }
 
     async componentWillMount() {
+
+        const responseType = await this.typeSolidWasteClient.getAll();
+
         const response = await this.dataClient.getAllWasteByPeriod('WEEK', 1);
 
-        const data = response.data.map(value => value.data);
-        const labels = response.data.map(value => value.name);
-        const colors = response.data.map(value => value.color);
+        const responseFiltered = response.data.filter((value) => value.data > 0);
+
+        const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
+
+        const barDatas = responseFiltered.map(value => {
+            const obj = {};
+            obj[value.name] = value.data;
+            obj['residuos'] = value.name;
+            return obj;
+        });
+        const barKeys = responseFiltered.map(value => value.name);
+        const barColors = responseFiltered.map(value => value.color);
+
+        const pieData = responseFiltered.map(value => {
+            const obj = {};
+            obj.id = value.name;
+            obj.label = value.name;
+            obj.value = ((value.data / totalKg) * 100).toFixed(2);
+            return obj;
+        });
 
         this.setState({
-            datasets: [{
-                data: data || 0,
-                backgroundColor: colors,
-                borderWidth: 1,
-            }],
-            labels: labels
+            datas: barDatas || [],
+            colors: barColors,
+            keys: barKeys,
+            pieData: pieData,
+            totalKg: totalKg,
+            typesSolidWaste: responseType.data
         });
     }
-
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
+                const {
+                    type,
+                    endDate,
+                    interval,
+                    period,
+                    startDate,
+                } = values;
 
-                const data = response.data.map(value => value.data);
-                const labels = response.data.map(value => value.name);
-                const colors = response.data.map(value => value.color);
+                if (type === '') {
+                    this.setState({
+                        layoutAll: true
+                    })
+                } else {
+                    this.setState({
+                        layoutAll: false
+                    })
+                }
 
-                this.setState({
-                    datasets: [{
-                        data: data || 0,
-                        backgroundColor: colors,
-                        borderWidth: 1,
-                    }],
-                    labels: labels
-                });
-                console.log('Received values of form: ', values);
+                if (endDate && startDate) {
+                    if (type != '') {
+                        const response = await this.dataClient.getWastesByPeriodFull(startDate, endDate, type);
+                         
+                        console.log(response);
+                        const x = response.data[0].data.map((value) => {
+                            let obj = {};
+                            obj[response.data[0].name] = value.quantityCollected;
+                            return obj;
+                        });
+
+                        console.log(x)
+                        // this.setState({
+                        //     streamDatas: x,
+                        //     // streamKeys: [...response.data[0].name]
+                        // });
+                    } else {
+
+                        const response = await this.dataClient.getWastesByPeriod(startDate, endDate, type);
+
+                        const responseFiltered = response.data.filter((value) => value.data > 0);
+
+                        const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
+
+                        const barDatas = responseFiltered.map(value => {
+                            const obj = {};
+                            obj[value.name] = value.data;
+                            obj['residuos'] = value.name;
+                            return obj;
+                        });
+                        const barKeys = responseFiltered.map(value => value.name);
+                        const barColors = responseFiltered.map(value => value.color);
+
+                        const pieData = responseFiltered.map(value => {
+                            const obj = {};
+                            obj.id = value.name;
+                            obj.label = value.name;
+                            obj.value = ((value.data / totalKg) * 100).toFixed(2);
+                            return obj;
+                        });
+
+                        this.setState({
+                            datas: barDatas || [],
+                            colors: barColors,
+                            keys: barKeys,
+                            pieData: pieData,
+                            totalKg: totalKg,
+                        });
+                    }
+                } else {
+                    const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
+                    const responseFiltered = response.data.filter((value) => value.data > 0);
+
+                    const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
+
+                    const barDatas = responseFiltered.map(value => {
+                        const obj = {};
+                        obj[value.name] = value.data;
+                        obj['residuos'] = value.name;
+                        return obj;
+                    });
+                    const barKeys = responseFiltered.map(value => value.name);
+                    const barColors = responseFiltered.map(value => value.color);
+
+                    const pieData = responseFiltered.map(value => {
+                        const obj = {};
+                        obj.id = value.name;
+                        obj.label = value.name;
+                        obj.value = ((value.data / totalKg) * 100).toFixed(2);
+                        return obj;
+                    });
+
+                    this.setState({
+                        datas: barDatas || [],
+                        colors: barColors,
+                        keys: barKeys,
+                        pieData: pieData,
+                        totalKg: totalKg
+                    });
+
+                }
+
+                // const response = values.type ? await this.dataClient.getWastesByPeriod(values.startDate, values.endDate, values.type) : await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
+
+                // const response = values.type ? await this.dataClient.getWasteByPeriod(values.period, values.interval, values.type) : await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
+
+                // // console.log(response)
+
+                // const data = response.data.map(value => value.data);
+                // const labels = response.data.map(value => value.name);
+                // const colors = response.data.map(value => value.color);
+
+                // this.setState({
+                //     datasets: [{
+                //         data: data || 0,
+                //         backgroundColor: colors,
+                //         borderWidth: 1,
+                //     }],
+                //     labels: labels
+                // });
+                // console.log('Received values of form: ', values);
+
+                //     const responses = [];
+                // for (const type of responseType.data) {
+                //     let res = await this.dataClient.getAllWasteByPeriodFull('WEEK', 1, type._id);
+                // res.data.data.forEach((value) => {
+
+                //     streamData.push({
+                //         // type.name
+                //     })
+                // });
+
             }
         });
     }
@@ -76,96 +221,316 @@ class AnalyzeCollectedWastesPage extends Component {
 
         const heightBoard = window.innerHeight * 0.5;
 
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 24 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 24 },
+            },
+        };
+
+
         return (
+
             <>
-                <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
-                    <Col xs={{ span: 24 }} lg={{ span: 6 }}><h2 style={{ margin: '0px' }}>Análise de Coletas</h2></Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 18 }}>
-                        <Form layout="inline" onSubmit={this.handleSubmit} style={{ float: 'right' }}>
-                            <FormItem>
-                                <span>Tipo de residuo</span>
-                            </FormItem>
-                            <FormItem>
-                                {getFieldDecorator('type', {
-                                    rules: [{ required: true, message: 'O tipo de residuo é obrigatorio!' }],
-                                    initialValue: ''
-                                })(
-                                    <Select style={{ width: 180 }}>
-                                        <Option value="">Todos</Option>
+                {
+                    !this.state.layoutAll &&
+                    <>
+                        <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
 
-                                        <Option value="WEEK">Semana</Option>
-                                        <Option value="MONTH">Mês</Option>
-                                        <Option value="YEAR">Ano</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                            <FormItem>
-                                <span>Periodo</span>
-                            </FormItem>
-                            <FormItem>
-                                {getFieldDecorator('interval', {
-                                    rules: [{ required: true, message: 'O intervalo é obrigatório!' }],
-                                    initialValue: 1
-                                })(
-                                    <InputNumber min={1} />,
-                                )}
-                            </FormItem>
-                            <FormItem>
-                                {getFieldDecorator('period', {
-                                    rules: [{ required: true, message: 'O periodo é obrigatorio!' }],
-                                    initialValue: 'WEEK'
-                                })(
-                                    <Select style={{ width: 120 }}>
-                                        <Option value="DAY">Dia</Option>
-                                        <Option value="WEEK">Semana</Option>
-                                        <Option value="MONTH">Mês</Option>
-                                        <Option value="YEAR">Ano</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                            <FormItem>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                >
-                                    Consultar
-                                </Button>
-                            </FormItem>
-                        </Form>
-                    </Col>
-                </Row>
+                                <Form layout="inline" onSubmit={this.handleSubmit}>
 
-                <Row gutter={24}>
-                    <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                        <Board>
-                            <h3 style={{ color: '#618833' }}>Residuos produzidos</h3>
-                            <hr style={{ marginBottom: '25px' }} />
-                            <Pie data={data} width={parseInt(300, 10)} height={parseInt(heightBoard * 0.2, 10)} />
-                        </Board>
-                    </Col>
+                                    <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '0px' }}>
 
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                                        <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+
+                                            <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                {getFieldDecorator('type', {
+                                                    rules: [{ required: false }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select style={{ width: '100%' }}>
+                                                        <Option value="">Todos</Option>
+                                                        {this.state.typesSolidWaste.map((value) => <Option value={value._id} key={value._id}>{value.name}</Option>)}
+                                                    </Select>
+                                                )}
+                                            </FormItem>
+                                        </Col>
+
+                                        <Col xs={{ span: 24 }} lg={{ span: 14 }} style={{ padding: '0px' }}>
+                                            <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('interval', {
+                                                            rules: [{ required: false, message: 'O intervalo é obrigatório!' }]
+                                                        })(
+                                                            <InputNumber min={1} placeholder="intervalo" style={{ width: '100%' }} />,
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('period', {
+                                                            rules: [{ required: true, message: 'O periodo é obrigatorio!' }],
+                                                            initialValue: 'WEEK'
+                                                        })(
+                                                            <Select style={{ width: '100%' }}>
+                                                                <Option value="DAY">Dia</Option>
+                                                                <Option value="WEEK">Semana</Option>
+                                                                <Option value="MONTH">Mês</Option>
+                                                                <Option value="YEAR">Ano</Option>
+                                                            </Select>
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 1 }} style={{ padding: '10px 0px' }}></Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('startDate', {
+                                                            rules: [{
+                                                                required: false,
+                                                            }]
+                                                        })(
+                                                            <DatePicker style={{ width: '100%' }} placeholder="Inicio" />
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('endDate', {
+                                                            rules: [{
+                                                                required: false,
+                                                            }],
+                                                        })(
+                                                            <DatePicker style={{ width: '100%' }} placeholder="fim" />
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        <Button
+                                                            type="primary"
+                                                            htmlType="submit"
+                                                            style={{ width: '100%' }}
+                                                        >
+                                                            Consultar
+                                                 </Button>
+                                                    </FormItem>
+                                                </Col>
+                                            </Row>
+
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Col>
+                        </Row>
+
                         <Row gutter={24}>
-                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={parseInt(window.innerHeight * 0.30, 10)}>
-                                    <h3 style={{ color: '#618833' }}>Volume coletado</h3>
-                                    <hr style={{ marginBottom: '25px' }} />
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                <Board height={window.innerHeight * 0.20}>
+                                    <Divider orientation="left"><h3 style={{ color: '#618833' }}>Peso total coletado</h3></Divider>
+                                    <div style={{
+                                        fontSize: '2em',
+                                        height: '25%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}>{this.state.totalKg.toFixed(2)} Kg</div>
                                 </Board>
                             </Col>
-                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={parseInt(window.innerHeight * 0.30, 10)}>
-                                    <h3 style={{ color: '#618833' }}>Volume coletado</h3>
+
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                <Board height={window.innerHeight * 0.5}>
+                                    <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Residuos produzidos em Kg</h3></Divider>
+
+                                    <div style={{ height: '80%' }}>
+                                        <ResponsiveStream
+                                            margin={{
+                                                top: 60,
+                                                right: 80,
+                                                bottom: 60,
+                                                left: 80
+                                            }}
+                                            keys={this.state.streamKeys}
+                                            data={this.state.streamDatas}
+                                            animate
+                                        />
+                                    </div>
                                 </Board>
                             </Col>
                         </Row>
-                    </Col>
-                    <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Board height={window.innerHeight * 0.27}>
-                            <h3 style={{ color: '#618833' }}>Volume coletado</h3>
-                            <hr style={{ marginBottom: '25px' }} />
-                        </Board>
-                    </Col>
-                </Row>
+                    </>
+                }
+
+                {
+                    this.state.layoutAll &&
+                    <>
+                        <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+
+                                <Form layout="inline" onSubmit={this.handleSubmit}>
+
+                                    <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '0px' }}>
+
+                                        <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+
+                                            <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                {getFieldDecorator('type', {
+                                                    rules: [{ required: false }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select style={{ width: '100%' }}>
+                                                        <Option value="">Todos</Option>
+                                                        {this.state.typesSolidWaste.map((value) => <Option value={value._id} key={value._id}>{value.name}</Option>)}
+                                                    </Select>
+                                                )}
+                                            </FormItem>
+                                        </Col>
+
+                                        <Col xs={{ span: 24 }} lg={{ span: 14 }} style={{ padding: '0px' }}>
+                                            <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('interval', {
+                                                            rules: [{ required: false, message: 'O intervalo é obrigatório!' }]
+                                                        })(
+                                                            <InputNumber min={1} placeholder="intervalo" style={{ width: '100%' }} />,
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('period', {
+                                                            rules: [{ required: true, message: 'O periodo é obrigatorio!' }],
+                                                            initialValue: 'WEEK'
+                                                        })(
+                                                            <Select style={{ width: '100%' }}>
+                                                                <Option value="DAY">Dia</Option>
+                                                                <Option value="WEEK">Semana</Option>
+                                                                <Option value="MONTH">Mês</Option>
+                                                                <Option value="YEAR">Ano</Option>
+                                                            </Select>
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 1 }} style={{ padding: '10px 0px' }}></Col>
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('startDate', {
+                                                            rules: [{
+                                                                required: false,
+                                                            }]
+                                                        })(
+                                                            <DatePicker style={{ width: '100%' }} placeholder="Inicio" />
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        {getFieldDecorator('endDate', {
+                                                            rules: [{
+                                                                required: false,
+                                                            }],
+                                                        })(
+                                                            <DatePicker style={{ width: '100%' }} placeholder="fim" />
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+
+                                                <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
+                                                    <FormItem {...formItemLayout} style={{ width: '100%' }}>
+                                                        <Button
+                                                            type="primary"
+                                                            htmlType="submit"
+                                                            style={{ width: '100%' }}
+                                                        >
+                                                            Consultar
+                                                 </Button>
+                                                    </FormItem>
+                                                </Col>
+                                            </Row>
+
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Col>
+                        </Row>
+
+                        <Row gutter={24}>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                <Board height={window.innerHeight * 0.20}>
+                                    <Divider orientation="left"><h3 style={{ color: '#618833' }}>Peso total coletado</h3></Divider>
+                                    <div style={{
+                                        fontSize: '2em',
+                                        height: '25%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}>{this.state.totalKg.toFixed(2)} Kg</div>
+                                </Board>
+                            </Col>
+                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                                <Board height={window.innerHeight * 0.5}>
+                                    <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Residuos produzidos em Kg</h3></Divider>
+
+                                    <div style={{ height: '80%' }}>
+                                        <ResponsiveBar
+                                            margin={{
+                                                top: 40,
+                                                right: 50,
+                                                bottom: 40,
+                                                left: 50
+                                            }}
+                                            axisBottom={null}
+                                            data={this.state.datas}
+                                            indexBy="residuos"
+                                            keys={this.state.keys}
+                                            colors={this.state.colors}
+                                            padding={0.2}
+                                            labelTextColor='#ffffff'
+                                            labelSkipWidth={16}
+                                            labelSkipHeight={16}
+
+                                        />
+                                    </div>
+                                </Board>
+                            </Col>
+
+                            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                                <Board height={window.innerHeight * 0.5}>
+                                    <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Residuos produzidos em Kg</h3></Divider>
+
+                                    <div style={{ height: '80%' }}>
+                                        <ResponsivePie
+                                            margin={{
+                                                top: 40,
+                                                right: 50,
+                                                bottom: 55,
+                                                left: 50
+                                            }}
+                                            data={this.state.pieData}
+                                            animate
+                                            innerRadius={0.6}
+                                            padAngle={1}
+                                            cornerRadius={3}
+                                            colors={this.state.colors}
+                                            radialLabelsLinkColor="inherit"
+                                            radialLabelsLinkStrokeWidth={3}
+                                            radialLabelsTextColor="inherit:darker(1.2)"
+                                        />
+                                    </div>
+                                </Board>
+                            </Col>
+                        </Row>
+                    </>
+                }
             </>
         );
     }

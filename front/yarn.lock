@@ -752,26 +752,6 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@fortawesome/fontawesome-common-types@^0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.8.tgz#8cacd1efd1aa956e1ef173f0abcf2ce1b7a0c66f"
-  integrity sha512-0sU7JDLdEeGQlWBSr5uEE6PZOM15YM1s9rFlpZV+WhNdX2V6Co3Sj0OW5el4F54X1Tw+nfxf4Cc3dUedudaDWg==
-
-"@fortawesome/fontawesome-svg-core@^1.2.8":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.8.tgz#b802b7f3d5b9d9d92ae92c18e865df468dcdf561"
-  integrity sha512-cvcMQZ5F8WSNSGMk9uWlkmZNfDzmdsWLRrTMrNwwihHcEmWRlIuSbDt+PQ/rXsnGmJnmLQJLFBT1cse/3swxbg==
-  dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.8"
-
-"@fortawesome/react-fontawesome@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.1.3.tgz#266b4047892c3d10498af1075d89252f74015b11"
-  integrity sha512-tc689l67rPZ7+ynZVUgOXY80rAt5KxvuH1qjPpJcbyJzJHzk5yhrD993BjsSEdPBLTtPqmvwynsO/XrAQqHbtg==
-  dependencies:
-    humps "^2.0.1"
-    prop-types "^15.5.10"
-
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -780,36 +760,36 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nivo/axes@0.50.0":
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/@nivo/axes/-/axes-0.50.0.tgz#335643fca4053c23ea0d4159053773e7a7d2073b"
-  integrity sha512-Asglzuxs3LF4FPwYUZAhmCP0tFMIHsdp9q/W7wuy1wliRxdl8vnHakNvLrs5jHEkCRZJhShRWuA3lkAQCk6cRQ==
+"@nivo/axes@0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@nivo/axes/-/axes-0.51.0.tgz#dd28bacfdbc8a74db35513a964c1a793485b604b"
+  integrity sha512-aDmcm7r6SoA+CoxQxaIN6NQhsN5poAJhuG+n+GsQSfn9p1LWh3MS20ruqqq43yXvA4Af2oI8yIbOewP7HcM9Nw==
   dependencies:
-    "@nivo/core" "0.50.0"
+    "@nivo/core" "0.51.0"
     d3-format "^1.3.2"
     d3-time-format "^2.1.3"
     lodash "^4.17.4"
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
-"@nivo/bar@^0.50.0":
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/@nivo/bar/-/bar-0.50.0.tgz#de559fdd776ce82a6927ee49f972e793b450c008"
-  integrity sha512-dKOulLeIoSZWaKm1JorJCW/lIA5cFL5m3vSBGjEtHxCshplbWTXdpH+hSqGXPrGMIVT/j2YREjBe4ITorO6MRA==
+"@nivo/bar@^0.51.5":
+  version "0.51.5"
+  resolved "https://registry.yarnpkg.com/@nivo/bar/-/bar-0.51.5.tgz#0e896327efd890a24ab4c0acfc2b854daaa7d8b9"
+  integrity sha512-n6sqTKySdxo5LTU2mpeGIjyIBU8kZDNdNaM63fZFXNhcTqp7qLMC9TZLW41+FegO4M/aJn8rFLZbmZSSxGTpdQ==
   dependencies:
-    "@nivo/axes" "0.50.0"
-    "@nivo/core" "0.50.0"
-    "@nivo/legends" "0.50.0"
+    "@nivo/axes" "0.51.0"
+    "@nivo/core" "0.51.0"
+    "@nivo/legends" "0.51.0"
     d3-scale "^2.1.2"
     d3-shape "^1.2.2"
     lodash "^4.17.4"
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
-"@nivo/core@0.50.0":
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/@nivo/core/-/core-0.50.0.tgz#a10fd8b331e084391799477c8365b750000d5ac6"
-  integrity sha512-F99lUFG0N9Y1hzxH8I8p7LYgrwtW/bDMr1NxMct6Ouj5KJVGHjMjxAzSkBe/Hzt8B4J53knvOUnNww+jzpttrA==
+"@nivo/core@0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@nivo/core/-/core-0.51.0.tgz#e499c322e6915a411bb31cf8f914ffb27ac7910e"
+  integrity sha512-+5Nlf5TT73wQ2zFizeia9GvAY9NLdIvuwPz0LGhzGUdH4SKz38/Bwd0/z+So+X1kLIPyLuty3SO2SxyiB0RVng==
   dependencies:
     d3-color "^1.0.3"
     d3-format "^1.3.2"
@@ -824,20 +804,36 @@
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
-"@nivo/generators@^0.50.0":
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/@nivo/generators/-/generators-0.50.0.tgz#87417afb2fe5f76423d79de603927a98b41bcfa7"
-  integrity sha512-EtCCEweS/64+M18OdN+CLjvQZWAUnVE/gwuDVEiWiXzj9qcPYGyNW0ymMLLfPxuTzlffaLAqZtOBcJplJIEjYg==
+"@nivo/legends@0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.51.0.tgz#36b0f8f6842045fd8201258c08d5be8a8d7f367f"
+  integrity sha512-4oaSmONcqMG5kpKG9v6929Tadxqn1eCoPTx4uz6Y1ibL/rXOppItwYys6e/lJr+yaCXGJs1l8rQdgVMhlxHIPA==
   dependencies:
-    d3-time "^1.0.10"
-    d3-time-format "^2.1.3"
     lodash "^4.17.4"
+    recompose "^0.26.0"
 
-"@nivo/legends@0.50.0":
-  version "0.50.0"
-  resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.50.0.tgz#f8adfc4925cab30c0b57e97f62fb9b0f4da8b31c"
-  integrity sha512-75/MA0ivMiaXfwGSDLWgWavTCxAtHZZR7FLIEq7xhfCPWB4QcDIByIKNpJKSJVrbRzceMOUkAZ8ULVZZysYfHQ==
+"@nivo/pie@^0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@nivo/pie/-/pie-0.51.0.tgz#a355a7523a69f091658481456ca96f41fd3fea3c"
+  integrity sha512-lwW/bRRcWs01k0IT5R3erROUqokvSSa3RCFm/h8bCFlYiSn5W8xfADyuibA2ChIn2lLMhwTIylSE5FoD9mlurw==
   dependencies:
+    "@nivo/core" "0.51.0"
+    "@nivo/legends" "0.51.0"
+    d3-shape "^1.2.2"
+    lodash "^4.17.4"
+    react-motion "^0.5.2"
+    recompose "^0.26.0"
+
+"@nivo/stream@^0.51.5":
+  version "0.51.5"
+  resolved "https://registry.yarnpkg.com/@nivo/stream/-/stream-0.51.5.tgz#8da03cbba4535a6bb1e9670a422b68f9aee0f3fb"
+  integrity sha512-m6wnho4mM2X2oPmGAvx8Yc+qKaHWWKR5Rh+iQCKXbX1Ly/vxAw6eUzYvp1zPgZgbGUvFStxEcFM2dr4xUtnHAQ==
+  dependencies:
+    "@nivo/core" "0.51.0"
+    "@nivo/legends" "0.51.0"
+    d3-format "^1.3.2"
+    d3-scale "^2.1.2"
+    d3-shape "^1.2.2"
     lodash "^4.17.4"
     recompose "^0.26.0"
 
@@ -2946,7 +2942,7 @@ d3-time-format@2, d3-time-format@^2.1.3:
   dependencies:
     d3-time "1"
 
-d3-time@1, d3-time@^1.0.10:
+d3-time@1:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.10.tgz#8259dd71288d72eeacfd8de281c4bf5c7393053c"
   integrity sha512-hF+NTLCaJHF/JqHN5hE8HVGAXPStEq6/omumPE/SxyHVrR7/qQxusFDo0t0c/44+sCGHthC7yNGFZIEgju0P8g==
@@ -4768,11 +4764,6 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
-
-humps@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/humps/-/humps-2.0.1.tgz#dd02ea6081bd0568dc5d073184463957ba9ef9aa"
-  integrity sha1-3QLqYIG9BWjcXQcxhEY5V7qe+ao=
 
 iconv-lite@0.4.23:
   version "0.4.23"

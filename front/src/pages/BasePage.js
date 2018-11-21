@@ -19,15 +19,6 @@ export default class BasePage extends Component {
         });
     };
 
-    // dropMenu = () => (
-    //     <Menu>
-    //         <Menu.Item key="1"><Icon type="user" />1st menu item</Menu.Item>
-    //         <Menu.Item key="2"><Icon type="user" />2nd menu item</Menu.Item>
-    //         <Menu.Item key="3"><Icon type="user" />3rd item</Menu.Item>
-    //     </Menu>
-    // );
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -67,13 +58,7 @@ export default class BasePage extends Component {
                     <Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
                         <Col><Icon className="trigger" type="menu-fold" onClick={this.showDrawer} /></Col>
                         <Col><Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
-                            {/* <Dropdown overlay={this.dropMenu} trigger={['click']}> */}
-                                {/* <div> */}
-                                    <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf', display: 'block' }}>U</Avatar>
-                                    <span style={{ margin: '0px 2px 0px 8px' }}>Leo Jaimesson</span>
-                                    <Icon type="down"/>
-                                {/* </div> */}
-                            {/* </Dropdown> */}
+                            <span style={{ margin: '0px 2px 0px 8px' }}>Sair</span>
                         </Row>
                         </Col>
                     </Row>
