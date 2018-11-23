@@ -62,8 +62,12 @@ class TypesSolidWastePage extends Component {
                     color: values.color
                 };
                 const response = await this.typeSolidWasteClient.save(typeSolidWaste);
+                console.log(response)
                 this.setState({
-                    typesSolidWaste: [{ key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data) }, ...this.state.typesSolidWaste],
+                    typesSolidWaste: [{
+                        color: response.data.color,
+                        key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data)
+                    }, ...this.state.typesSolidWaste],
                     modalVisible: false,
                     isRecyclable: false,
                     isReutilable: false,
@@ -127,7 +131,7 @@ class TypesSolidWastePage extends Component {
                 key: 'color',
                 width: 20,
                 render: color => (
-                    <div style={{width: '10px', height: '10px', background: color}}></div>
+                    <div style={{ width: '10px', height: '10px', background: color }}></div>
                 )
             },
             {
