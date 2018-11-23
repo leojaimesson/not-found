@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import SolidWasteCollected from './SolidWasteCollected';
 
 const TypeSolidWasteSchema = new mongoose.Schema({
   name: {
@@ -25,6 +26,16 @@ const TypeSolidWasteSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+TypeSolidWasteSchema.pre('remove', function(next) {
+  try {
+    SolidWasteCollected.findOneAndDelete({typeWasted: this._id});
+  } catch(error) {
+    throw error;
+  } finally {
+    next();
+  }
 });
 
 export default mongoose.model('TypeSolidWaste', TypeSolidWasteSchema);
