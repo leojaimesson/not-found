@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import SolidWasteCollected from './SolidWasteCollected';
 
 const TypeSolidWasteSchema = new mongoose.Schema({
   name: {
@@ -28,10 +27,14 @@ const TypeSolidWasteSchema = new mongoose.Schema({
   },
 });
 
-TypeSolidWasteSchema.pre('remove', function(next) {
+// https://stackoverflow.com/questions/14348516/cascade-style-delete-in-mongoose
+TypeSolidWasteSchema.pre('remove', function (next) {
   try {
-    SolidWasteCollected.findOneAndDelete({typeWasted: this._id});
-  } catch(error) {
+    this.model('SolidWasteCollected').remove({
+      typeWasted: this._id
+    }, next);
+    next();
+  } catch (error) {
     throw error;
   } finally {
     next();
