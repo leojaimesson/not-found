@@ -17,6 +17,10 @@
     padding: 9px;
 }
 
+.ant-table-wrapper ul.ant-pagination {
+    margin: 16px 10px;
+}
+
 .ant-layout-sider .ant-layout-sider-zero-width-trigger {
     display: none;
 }
@@ -39,7 +43,7 @@
 }
 
 @media (min-width: 993px) {
-	.trigger {
+	.hide, .trigger {
         display: none;
     }
 }

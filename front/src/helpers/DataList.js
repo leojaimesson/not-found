@@ -27,6 +27,7 @@ const toTypesSolidWasteData = (typesSolidWaste) => typesSolidWaste.map((typeSoli
 const toSolidWasteCollectedData = (solidWasteCollected) => solidWasteCollected.map((solidWasteCollected) => ({
     key: solidWasteCollected._id,
     typeWasted: solidWasteCollected.typeWasted.name,
+    quantityCollected: solidWasteCollected.quantityCollected,
     collectionDate: moment(new Date(solidWasteCollected.collectionDate)).format('DD/MM/YYYY'),
 }));
 

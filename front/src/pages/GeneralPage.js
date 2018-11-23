@@ -51,7 +51,7 @@ class GeneralPage extends Component {
             const obj = {};
             obj.id = value.name;
             obj.label = value.name;
-            obj.value = ((value.data / totalKg) * 100).toFixed(2);
+            obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
             return obj;
         });
 

@@ -120,16 +120,25 @@ class SolidWasteCollectedPage extends Component {
         };
 
         const columns = [{
+            title: 'Data',
+            dataIndex: 'collectionDate',
+            key: 'collectionDate',
+            width: 150
+        }, {
+            title: 'Total coletado',
+            dataIndex: 'quantityCollected',
+            key: 'quantityCollected',
+            width: 200,
+            render: (text, record) => (
+                `${text} Kg`
+            ),
+        }, {
             title: 'Tipo',
             dataIndex: 'typeWasted',
             key: 'typeWasted'
         }, {
-            title: 'Data',
-            dataIndex: 'collectionDate',
-            key: 'collectionDate',
-        }, {
             title: 'Ação',
-            key: 'action',
+            key: 'acti  on',
             render: (text, record) => (
                 <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
             ),
@@ -139,7 +148,7 @@ class SolidWasteCollectedPage extends Component {
             <>
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
                     <Col><h2>Coletados</h2></Col>
-                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex:"999"}}onClick={this.showModal}></Button></Col>
+                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{ height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex: "999" }} onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
                     title="Cadastrar Coleta"
@@ -184,7 +193,7 @@ class SolidWasteCollectedPage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} bordered dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 500 ? { x: 1000 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

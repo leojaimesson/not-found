@@ -31,7 +31,9 @@ class AnalyzeCollectedWastesPage extends Component {
             keys: [],
             pieData: [],
             totalKg: 0,
-            streamDatas: []
+            streamDatas: [],
+            streamKeys: [],
+            streamColors: [],
         }
     }
 
@@ -58,7 +60,7 @@ class AnalyzeCollectedWastesPage extends Component {
             const obj = {};
             obj.id = value.name;
             obj.label = value.name;
-            obj.value = ((value.data / totalKg) * 100).toFixed(2);
+            obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
             return obj;
         });
 
@@ -94,25 +96,39 @@ class AnalyzeCollectedWastesPage extends Component {
                     })
                 }
 
+                const start = new Date(startDate);
+                start.setHours(0)
+                start.setMinutes(0);
+                start.setSeconds(0);
+
+                const end = new Date(endDate);
+                end.setHours(23)
+                end.setMinutes(59);
+                end.setSeconds(59);
+
                 if (endDate && startDate) {
                     if (type != '') {
-                        const response = await this.dataClient.getWastesByPeriodFull(startDate, endDate, type);
-                         
-                        console.log(response);
+                        console.log(new DataClient(startDate), new Date(endDate))
+                        const response = await this.dataClient.getWastesByPeriodFull(start, end, type);
+
                         const x = response.data[0].data.map((value) => {
                             let obj = {};
                             obj[response.data[0].name] = value.quantityCollected;
                             return obj;
                         });
-
-                        console.log(x)
-                        // this.setState({
-                        //     streamDatas: x,
-                        //     // streamKeys: [...response.data[0].name]
-                        // });
+                        const streamKeys = []
+                        streamKeys.push(response.data[0].name)
+                        const streamColors = []
+                        streamColors.push(response.data[0].color)
+                        this.setState({
+                            streamDatas: x,
+                            streamKeys: streamKeys,
+                            streamColors: streamColors
+                        });
                     } else {
+                        console.log(new DataClient(startDate), new Date(endDate))
 
-                        const response = await this.dataClient.getWastesByPeriod(startDate, endDate, type);
+                        const response = await this.dataClient.getWastesByPeriod(start, end);
 
                         const responseFiltered = response.data.filter((value) => value.data > 0);
 
@@ -131,7 +147,7 @@ class AnalyzeCollectedWastesPage extends Component {
                             const obj = {};
                             obj.id = value.name;
                             obj.label = value.name;
-                            obj.value = ((value.data / totalKg) * 100).toFixed(2);
+                            obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
                             return obj;
                         });
 
@@ -144,68 +160,57 @@ class AnalyzeCollectedWastesPage extends Component {
                         });
                     }
                 } else {
-                    const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
-                    const responseFiltered = response.data.filter((value) => value.data > 0);
 
-                    const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
+                    if (type != '') {
+                        const response = await this.dataClient.getAllWasteByPeriodFull(values.period, values.interval, type);
 
-                    const barDatas = responseFiltered.map(value => {
-                        const obj = {};
-                        obj[value.name] = value.data;
-                        obj['residuos'] = value.name;
-                        return obj;
-                    });
-                    const barKeys = responseFiltered.map(value => value.name);
-                    const barColors = responseFiltered.map(value => value.color);
+                        const x = response.data[0].data.map((value) => {
+                            let obj = {};
+                            obj[response.data[0].name] = value.quantityCollected;
+                            return obj;
+                        });
+                        const streamKeys = []
+                        streamKeys.push(response.data[0].name)
+                        const streamColors = []
+                        streamColors.push(response.data[0].color)
+                        this.setState({
+                            streamDatas: x,
+                            streamKeys: streamKeys,
+                            streamColors: streamColors
+                        });
+                    } else {
+                        const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
+                        const responseFiltered = response.data.filter((value) => value.data > 0);
 
-                    const pieData = responseFiltered.map(value => {
-                        const obj = {};
-                        obj.id = value.name;
-                        obj.label = value.name;
-                        obj.value = ((value.data / totalKg) * 100).toFixed(2);
-                        return obj;
-                    });
+                        const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
 
-                    this.setState({
-                        datas: barDatas || [],
-                        colors: barColors,
-                        keys: barKeys,
-                        pieData: pieData,
-                        totalKg: totalKg
-                    });
+                        const barDatas = responseFiltered.map(value => {
+                            const obj = {};
+                            obj[value.name] = value.data;
+                            obj['residuos'] = value.name;
+                            return obj;
+                        });
+                        const barKeys = responseFiltered.map(value => value.name);
+                        const barColors = responseFiltered.map(value => value.color);
+
+                        const pieData = responseFiltered.map(value => {
+                            const obj = {};
+                            obj.id = value.name;
+                            obj.label = value.name;
+                            obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
+                            return obj;
+                        });
+
+                        this.setState({
+                            datas: barDatas || [],
+                            colors: barColors,
+                            keys: barKeys,
+                            pieData: pieData,
+                            totalKg: totalKg
+                        });
+                    }
 
                 }
-
-                // const response = values.type ? await this.dataClient.getWastesByPeriod(values.startDate, values.endDate, values.type) : await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
-
-                // const response = values.type ? await this.dataClient.getWasteByPeriod(values.period, values.interval, values.type) : await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
-
-                // // console.log(response)
-
-                // const data = response.data.map(value => value.data);
-                // const labels = response.data.map(value => value.name);
-                // const colors = response.data.map(value => value.color);
-
-                // this.setState({
-                //     datasets: [{
-                //         data: data || 0,
-                //         backgroundColor: colors,
-                //         borderWidth: 1,
-                //     }],
-                //     labels: labels
-                // });
-                // console.log('Received values of form: ', values);
-
-                //     const responses = [];
-                // for (const type of responseType.data) {
-                //     let res = await this.dataClient.getAllWasteByPeriodFull('WEEK', 1, type._id);
-                // res.data.data.forEach((value) => {
-
-                //     streamData.push({
-                //         // type.name
-                //     })
-                // });
-
             }
         });
     }
@@ -359,7 +364,12 @@ class AnalyzeCollectedWastesPage extends Component {
                                             }}
                                             keys={this.state.streamKeys}
                                             data={this.state.streamDatas}
-                                            animate
+                                            offsetType="diverging"
+                                            colors={this.state.streamColors}
+                                            animate={true}
+                                            dotSize={8}
+                                            dotBorderWidth={2}
+                                            dotBorderColor="inherit:brighter(0.7)"
                                         />
                                     </div>
                                 </Board>
@@ -516,7 +526,7 @@ class AnalyzeCollectedWastesPage extends Component {
                                                 left: 50
                                             }}
                                             data={this.state.pieData}
-                                            animate
+                                            animate={true}
                                             innerRadius={0.6}
                                             padAngle={1}
                                             cornerRadius={3}
