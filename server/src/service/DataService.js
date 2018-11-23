@@ -38,7 +38,7 @@ const getAllWasteDataByPeriod = async (period, interval, idTypeSolidWaste) => {
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: start, $lt: end },
-      });
+      }).sort('collectionDate').exec();
       result.push({
         name: type.name,
         color: type.color,
@@ -63,7 +63,7 @@ const getAllWasteDataByPeriodFull = async (period, interval, idTypeSolidWaste) =
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: start, $lt: end },
-      });
+      }).sort('collectionDate').exec();
       result.push({
         name: type.name,
         color: type.color,
@@ -87,7 +87,7 @@ const getWastesDataByPeriod = async (startDate, endDate, idTypeSolidWaste) => {
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: new Date(startDate), $lt: new Date(endDate) },
-      });
+      }).sort('collectionDate').exec();
       result.push({
         name: type.name,
         color: type.color,
@@ -110,7 +110,7 @@ const getWastesDataByPeriodFull = async (startDate, endDate, idTypeSolidWaste) =
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: new Date(startDate), $lt: new Date(endDate) },
-      });
+      }).populate('typeWasted').sort('collectionDate').exec();
       result.push({
         name: type.name,
         color: type.color,
@@ -140,7 +140,7 @@ const getWasteDataByPeriod = async (period, interval, idTypeSolidWaste) => {
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: start, $lte: end },
-      });
+      }).sort('collectionDate').exec();
       console.log(filtered)
       result.push({
         name: `${start.getDay() + 1}/${start.getMonth() + 1}/${start.getYear()}`,
