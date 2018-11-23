@@ -24,7 +24,7 @@ class TypesSolidWastePage extends Component {
     async componentWillMount() {
         const response = await this.typeSolidWasteClient.getAll();
         this.setState({
-            typesSolidWaste: response ? DataList.toTypesSolidWasteData(response.data) : [],
+            typesSolidWaste: response ? DataList.toTypesSolidWasteData(response.data).reverse() : [],
         });
     }
 
@@ -36,7 +36,6 @@ class TypesSolidWastePage extends Component {
             okText: 'Excluir',
             onOk: async () => {
                 const response = await this.typeSolidWasteClient.remove(idTypeSolidWaste);
-                console.log(response)
                 this.setState({
                     typesSolidWaste: this.state.typesSolidWaste.filter((typeSolidWast) => typeSolidWast.key !== response.data._id)
                 })
@@ -64,19 +63,18 @@ class TypesSolidWastePage extends Component {
                 };
                 const response = await this.typeSolidWasteClient.save(typeSolidWaste);
                 this.setState({
-                    typesSolidWaste: [...this.state.typesSolidWaste, { key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data) }]
+                    typesSolidWaste: [{ key: response.data._id, name: response.data.name, description: response.data.description, tags: DataList.toTags(response.data) }, ...this.state.typesSolidWaste],
+                    modalVisible: false,
+                    isRecyclable: false,
+                    isReutilable: false,
                 })
             }
-            this.setState({
-                modalVisible: false,
-                isRecyclable: false,
-                isReutilable: false,
-            });
+
         });
+        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             modalVisible: false,
             isRecyclable: false,
@@ -122,39 +120,52 @@ class TypesSolidWastePage extends Component {
             }
         }
 
-        const columns = [{
-            title: 'Nome',
-            dataIndex: 'name',
-            key: 'name'
-        }, {
-            title: 'Descrição',
-            dataIndex: 'description',
-            key: 'description',
-        }, {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: tags => (
-                <span>
-                    {tags.map(tag => <Tag color="blue" key={tag}>{tag}</Tag>)}
-                </span>
-            )
-        }, {
-            title: 'Ação',
-            key: 'action',
-            render: (text, record) => (
-                <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
-            ),
-        }];
+        const columns = [
+            {
+                title: '',
+                dataIndex: 'color',
+                key: 'color',
+                width: 20,
+                render: color => (
+                    <div style={{width: '10px', height: '10px', background: color}}></div>
+                )
+            },
+            {
+                title: 'Nome',
+                dataIndex: 'name',
+                key: 'name',
+                width: 200,
+
+            }, {
+                title: 'Descrição',
+                dataIndex: 'description',
+                key: 'description',
+                width: 400,
+
+            }, {
+                title: 'Tags',
+                key: 'tags',
+                dataIndex: 'tags',
+                render: tags => (
+                    <span>
+                        {tags.map(tag => <Tag color="blue" key={tag}>{tag}</Tag>)}
+                    </span>
+                )
+            }, {
+                title: 'Ação',
+                key: 'action',
+                render: (text, record) => (
+                    <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
+                ),
+            }];
 
         return (
             <>
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
-                    <Col><h2>Cadastrar Tipo de Residuo Solido</h2></Col>
-                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex:"999"}}onClick={this.showModal}></Button></Col>
+                    <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{ height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex: "999" }} onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
-                    title="Cadastrar Usuário"
+                    title="Cadastrar no tipo de resíduo"
                     visible={this.state.modalVisible}
                     okText={"Cadastrar"}
                     onOk={this.handleOk}
@@ -174,7 +185,7 @@ class TypesSolidWastePage extends Component {
                         <FormItem {...formItemLayout} label="Descrição">
                             {getFieldDecorator('description', {
                                 rules: [{
-                                    required: true, message: 'Por favor digite a descrição do tipo de residuo',
+                                    required: true, message: 'Por favor digite a descrição do tipo de resí  duo',
                                 }],
                             })(
                                 <Input />
@@ -184,14 +195,13 @@ class TypesSolidWastePage extends Component {
                         <FormItem {...formItemLayout} label="Cor">
                             {getFieldDecorator('color', {
                                 rules: [{
-                                    required: true, message: 'cor',
+                                    required: true, message: 'Por favor selecione uma cor para este tipo de resíduo',
                                 }],
-                                initialValue: '#ffee00'
                             })(
-                                <Input type='color' onChange={(e) => {console.log(e.target.value)}}/>
+                                <Input type='color' onChange={(e) => { console.log(e.target.value) }} />
                             )}
                         </FormItem>
-                        
+
                         <FormItem {...formTailLayout}>
                             <Checkbox onClick={this.handleChangeCheckRecyclable}>
                                 Reciclável
@@ -202,7 +212,7 @@ class TypesSolidWastePage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} dataSource={this.state.typesSolidWaste} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} bordered dataSource={this.state.typesSolidWaste} scroll={window.innerWidth <= 600 ? { x: 900 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

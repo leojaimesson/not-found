@@ -786,6 +786,19 @@
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
+"@nivo/calendar@^0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@nivo/calendar/-/calendar-0.51.0.tgz#a021cad707b685e152c11f01a1efbc6976bd7d9a"
+  integrity sha512-KIArMl2w2RajS1OzWbcuCDyHPqGiY9RxcrBA2B+Kb7fA4yNKuTAh6n7kwB8WRiUnLEsor1GOaDAgNLdoqHJfuQ==
+  dependencies:
+    "@nivo/core" "0.51.0"
+    "@nivo/legends" "0.51.0"
+    d3-scale "^2.1.2"
+    d3-time "^1.0.10"
+    d3-time-format "^2.1.3"
+    lodash "^4.17.4"
+    recompose "^0.26.0"
+
 "@nivo/core@0.51.0":
   version "0.51.0"
   resolved "https://registry.yarnpkg.com/@nivo/core/-/core-0.51.0.tgz#e499c322e6915a411bb31cf8f914ffb27ac7910e"
@@ -2974,7 +2987,7 @@ d3-time-format@2, d3-time-format@^2.1.3:
   dependencies:
     d3-time "1"
 
-d3-time@1:
+d3-time@1, d3-time@^1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.10.tgz#8259dd71288d72eeacfd8de281c4bf5c7393053c"
   integrity sha512-hF+NTLCaJHF/JqHN5hE8HVGAXPStEq6/omumPE/SxyHVrR7/qQxusFDo0t0c/44+sCGHthC7yNGFZIEgju0P8g==

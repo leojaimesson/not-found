@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import pdfMake from 'pdfmake/build/pdfmake';
 import vfsFonts from 'pdfmake/build/vfs_fonts';
 
-import moment from 'moment';
-
 import { Table, Row, Col, Button, Form, Select, DatePicker } from 'antd';
 
 import TypeSolidWasteClient from '../api/TypeSolidWasteClient';
@@ -208,7 +206,7 @@ class ReportPage extends Component {
                                 </Col>
                             </Row>
                         </div>
-                        {this.state.dataTables.map((value, index) => <Table columns={columns} bordered dataSource={value} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} style={{ background: "white", marginBottom: '20px' }} />)}
+                        {this.state.dataTables.map((value, index) => <Table columns={columns} bordered dataSource={value} scroll={window.innerWidth <= 600 ? { x: 700 } : undefined} style={{ background: "white", marginBottom: '20px' }} />)}
                     </div>
                 }
 

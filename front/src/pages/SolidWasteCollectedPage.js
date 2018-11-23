@@ -30,10 +30,8 @@ class SolidWasteCollectedPage extends Component {
         const responseCollected = await this.solidWasteCollectedClient.getAll();
         const responseType = await this.typeSolidWasteClient.getAll();
 
-        console.log(responseCollected);
-
         this.setState({
-            solidsWasteCollected: DataList.toSolidWasteCollectedData(responseCollected.data),
+            solidsWasteCollected: DataList.toSolidWasteCollectedData(responseCollected.data).reverse(),
             typesSolidWaste: responseType.data
         });
     }
@@ -46,13 +44,11 @@ class SolidWasteCollectedPage extends Component {
             okText: 'Excluir',
             onOk: async () => {
                 const response = await this.solidWasteCollectedClient.remove(idSolidWasteCollected);
-                console.log(response)
                 this.setState({
                     solidsWasteCollected: this.state.solidsWasteCollected.filter((solidWasteCollected) => solidWasteCollected.key !== response.data._id)
                 })
             }
         });
-        console.log(idSolidWasteCollected)
     }
 
     showModal = () => {
@@ -64,7 +60,6 @@ class SolidWasteCollectedPage extends Component {
     handleOk = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll(async (err, values) => {
-            console.log(values.collectionDate)
             if (!err) {
                 const solidWasteCollected = {
                     typeWasted: values.typeWasted,
@@ -77,17 +72,16 @@ class SolidWasteCollectedPage extends Component {
                         key: response.data._id,
                         typeWasted: response.data.typeWasted.name,
                         collectionDate: moment(new Date(response.data.collectionDate)).format('DD/MM/YYYY'),
-                    }, ...this.state.solidsWasteCollected]
+                        quantityCollected: response.data.quantityCollected
+                    }, ...this.state.solidsWasteCollected],
+                    modalVisible: false,
                 })
             }
-            this.setState({
-                modalVisible: false,
-            });
         });
+        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             modalVisible: false,
         });
@@ -147,7 +141,6 @@ class SolidWasteCollectedPage extends Component {
         return (
             <>
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
-                    <Col><h2>Coletados</h2></Col>
                     <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{ height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex: "999" }} onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
@@ -162,7 +155,7 @@ class SolidWasteCollectedPage extends Component {
                         <FormItem {...formItemLayout} label="Tipo de Residuo">
                             {getFieldDecorator('typeWasted', {
                                 rules: [{
-                                    required: true, message: 'Por favor digite o nome do tipo de residuo',
+                                    required: true, message: 'Por favor selecione o tipo de resíduo coletado',
                                 }],
                             })(
                                 <Select placeholder="Selecione o tipo de residuo" onChange={this.handleChangeSelect}>
@@ -171,10 +164,10 @@ class SolidWasteCollectedPage extends Component {
                             )}
                         </FormItem>
 
-                        <FormItem {...formItemLayout} label="Quantidade">
+                        <FormItem {...formItemLayout} label="Quantidade em Kg">
                             {getFieldDecorator('quantityCollected', {
                                 rules: [{
-                                    required: true, message: 'Por favor digite a descrição do tipo de residuo',
+                                    required: true, message: 'Por favor informe a quantidade coletada',
                                 }],
                             })(
                                 <Input />
@@ -193,7 +186,7 @@ class SolidWasteCollectedPage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} bordered dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 500 ? { x: 1000 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} bordered dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 600 ? { x: 1000 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

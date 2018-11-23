@@ -21,6 +21,7 @@ const toTypesSolidWasteData = (typesSolidWaste) => typesSolidWaste.map((typeSoli
     key: typeSolidWaste._id,
     name: typeSolidWaste.name,
     description: typeSolidWaste.description,
+    color: typeSolidWaste.color,
     tags: toTags(typeSolidWaste)
 }));
 

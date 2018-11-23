@@ -57,9 +57,9 @@ export default class BasePage extends Component {
                 <Header style={{ background: '#8bc34a', padding: "0px 14px" }}>
                     <Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
                         <Col className="hide"><Icon className="trigger" type="menu-fold" onClick={this.showDrawer} /></Col>
-                        <Col><h2>{this.props.titlePage}</h2></Col>
+                        <Col><h2 style={{margin: '0px'}}>{this.props.titlePage}</h2></Col>
                         <Col><Row type="flex" justify="space-between" align="middle" style={{ height: '100%' }}>
-                            <span style={{ margin: '0px 2px 0px 8px' }}>Sair</span>
+                            {/* <span style={{ margin: '0px 2px 0px 8px' }}>Sair</span> */}
                         </Row>
                         </Col>
                     </Row>

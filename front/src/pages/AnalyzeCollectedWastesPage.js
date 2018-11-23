@@ -34,6 +34,7 @@ class AnalyzeCollectedWastesPage extends Component {
             streamDatas: [],
             streamKeys: [],
             streamColors: [],
+            legend: [],
         }
     }
 
@@ -63,6 +64,7 @@ class AnalyzeCollectedWastesPage extends Component {
             obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
             return obj;
         });
+        const legend = responseFiltered.map(value => ({ name: value.name, color: value.color }));
 
         this.setState({
             datas: barDatas || [],
@@ -70,7 +72,8 @@ class AnalyzeCollectedWastesPage extends Component {
             keys: barKeys,
             pieData: pieData,
             totalKg: totalKg,
-            typesSolidWaste: responseType.data
+            typesSolidWaste: responseType.data,
+            legend: legend
         });
     }
 
@@ -81,8 +84,6 @@ class AnalyzeCollectedWastesPage extends Component {
                 const {
                     type,
                     endDate,
-                    interval,
-                    period,
                     startDate,
                 } = values;
 
@@ -107,9 +108,12 @@ class AnalyzeCollectedWastesPage extends Component {
                 end.setSeconds(59);
 
                 if (endDate && startDate) {
-                    if (type != '') {
-                        console.log(new DataClient(startDate), new Date(endDate))
+                    if (type !== '') {
                         const response = await this.dataClient.getWastesByPeriodFull(start, end, type);
+
+                        const responseFiltered = response.data[0].data.reduce((acc, current) => acc + current.quantityCollected, 0);
+
+                        const totalKg = responseFiltered;
 
                         const x = response.data[0].data.map((value) => {
                             let obj = {};
@@ -123,10 +127,10 @@ class AnalyzeCollectedWastesPage extends Component {
                         this.setState({
                             streamDatas: x,
                             streamKeys: streamKeys,
-                            streamColors: streamColors
+                            streamColors: streamColors,
+                            totalKg: totalKg
                         });
                     } else {
-                        console.log(new DataClient(startDate), new Date(endDate))
 
                         const response = await this.dataClient.getWastesByPeriod(start, end);
 
@@ -161,7 +165,7 @@ class AnalyzeCollectedWastesPage extends Component {
                     }
                 } else {
 
-                    if (type != '') {
+                    if (type !== '') {
                         const response = await this.dataClient.getAllWasteByPeriodFull(values.period, values.interval, type);
 
                         const x = response.data[0].data.map((value) => {
@@ -169,6 +173,10 @@ class AnalyzeCollectedWastesPage extends Component {
                             obj[response.data[0].name] = value.quantityCollected;
                             return obj;
                         });
+
+                        const responseFiltered = response.data[0].data.reduce((acc, current) => acc + current.quantityCollected, 0);
+
+
                         const streamKeys = []
                         streamKeys.push(response.data[0].name)
                         const streamColors = []
@@ -176,7 +184,8 @@ class AnalyzeCollectedWastesPage extends Component {
                         this.setState({
                             streamDatas: x,
                             streamKeys: streamKeys,
-                            streamColors: streamColors
+                            streamColors: streamColors,
+                            totalKg: responseFiltered
                         });
                     } else {
                         const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
@@ -217,14 +226,7 @@ class AnalyzeCollectedWastesPage extends Component {
 
     render() {
 
-        const data = {
-            datasets: this.state.datasets,
-            labels: this.state.labels
-        };
-
         const { getFieldDecorator } = this.props.form;
-
-        const heightBoard = window.innerHeight * 0.5;
 
         const formItemLayout = {
             labelCol: {
@@ -509,6 +511,9 @@ class AnalyzeCollectedWastesPage extends Component {
                                             labelSkipHeight={16}
 
                                         />
+                                        <div style={{ display: 'flex' }}>
+                                            {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ fontSize: '0.65em', marginLeft: '2px' }}>{value.name}</span></div>)}
+                                        </div>
                                     </div>
                                 </Board>
                             </Col>
@@ -535,6 +540,9 @@ class AnalyzeCollectedWastesPage extends Component {
                                             radialLabelsLinkStrokeWidth={3}
                                             radialLabelsTextColor="inherit:darker(1.2)"
                                         />
+                                        <div style={{ display: 'flex' }}>
+                                            {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ fontSize: '0.65em', marginLeft: '2px' }}>{value.name}</span></div>)}
+                                        </div>
                                     </div>
                                 </Board>
                             </Col>

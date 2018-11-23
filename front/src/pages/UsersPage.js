@@ -62,13 +62,14 @@ class UsersPage extends Component {
                 };
                 const response = await this.userClient.save(user);
                 this.setState({
-                    users: [...this.state.users, { key: response.data._id, name: response.data.firstName, email: response.data.email }]
+                    users: [{ key: response.data._id, name: response.data.firstName, email: response.data.email }, ...this.state.users]
                 })
+                this.setState({
+                    modalVisible: false,
+                });
             }
-            this.setState({
-                modalVisible: false,
-            });
         });
+        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
@@ -117,11 +118,14 @@ class UsersPage extends Component {
         const columns = [{
             title: 'Nome',
             dataIndex: 'name',
-            key: 'name'
+            key: 'name',
+            width: 300,
+
         }, {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
+            width: 500,
         }, {
             title: 'Ação',
             key: 'action',
@@ -131,9 +135,8 @@ class UsersPage extends Component {
         }];
 
         return (
-            <>
+            <>  
                 <Row type="flex" justify="space-between" align="middle" style={{ marginBottom: "20px" }}>
-                    <Col><h2>Cadastrar Usuário</h2></Col>
                     <Col><Button type="primary" shape="circle" icon="plus" size="large" style={{height: '50px', width: '50px', position: 'fixed', bottom: '50px', right: '10px', zIndex:"999"}}onClick={this.showModal}></Button></Col>
                 </Row>
                 <Modal
@@ -198,7 +201,7 @@ class UsersPage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} dataSource={this.state.users} scroll={window.innerWidth <= 500 ? { x: 500 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} bordered dataSource={this.state.users} scroll={window.innerWidth <= 600 ? { x: 800 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

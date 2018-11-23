@@ -13,7 +13,6 @@ export default class AnalysesPage extends Component {
     render() {
         return (
             <>
-                <h2>Visão geral</h2>
                 <Row gutter={24}>
                     <Col xs={{ span: 24 }} lg={{ span: 6 }}>
                         <Link to="/analises/s" className="nav-text">
