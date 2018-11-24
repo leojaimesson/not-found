@@ -10,7 +10,7 @@ const DEFAULT_MONGO = 'mongodb://localhost/notfound';
 
 export default {
   server: {
-    port: process.env.SERVER || DEFAULT_SERVER_PORT,
+    port: process.env.PORT || DEFAULT_SERVER_PORT,
   },
   mongodb: {
     uri: process.env.MONGO_URI || DEFAULT_MONGO,
