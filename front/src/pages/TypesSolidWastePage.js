@@ -17,7 +17,9 @@ class TypesSolidWastePage extends Component {
             visibleModalExcluir: false,
             isRecyclable: false,
             isReutilable: false,
-            typesSolidWaste: []
+            typesSolidWaste: [],
+            filters: [],
+            filteredInfo: {},
         };
     }
 
@@ -41,7 +43,6 @@ class TypesSolidWastePage extends Component {
                 })
             }
         });
-        console.log(idTypeSolidWaste)
     }
 
     showModal = () => {
@@ -55,14 +56,13 @@ class TypesSolidWastePage extends Component {
         this.props.form.validateFieldsAndScroll(async (err, values) => {
             if (!err) {
                 const typeSolidWaste = {
-                    name: values.name,
+                    name: values.name.toUpperCase(),
                     description: values.description,
                     recyclable: this.state.isRecyclable,
                     reutilable: this.state.isReutilable,
                     color: values.color
                 };
                 const response = await this.typeSolidWasteClient.save(typeSolidWaste);
-                console.log(response)
                 this.setState({
                     typesSolidWaste: [{
                         color: response.data.color,
@@ -71,11 +71,11 @@ class TypesSolidWastePage extends Component {
                     modalVisible: false,
                     isRecyclable: false,
                     isReutilable: false,
-                })
+                });
+                this.props.form.resetFields();
             }
 
         });
-        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
@@ -95,6 +95,12 @@ class TypesSolidWastePage extends Component {
     handleChangeCheckReutilable = (e) => {
         this.setState({
             isReutilable: e.target.checked,
+        });
+    }
+
+    handleChangeTable = (pagination, filters, sorter) => {
+        this.setState({
+            filteredInfo: filters,
         });
     }
 
@@ -138,23 +144,40 @@ class TypesSolidWastePage extends Component {
                 title: 'Nome',
                 dataIndex: 'name',
                 key: 'name',
-                width: 200,
+                width: 500,
 
             }, {
                 title: 'Descrição',
                 dataIndex: 'description',
                 key: 'description',
-                width: 400,
+                width: 600,
 
             }, {
-                title: 'Tags',
+                title: '',
                 key: 'tags',
                 dataIndex: 'tags',
-                render: tags => (
-                    <span>
-                        {tags.map(tag => <Tag color="blue" key={tag}>{tag}</Tag>)}
-                    </span>
-                )
+                render: tags => {
+                    function tagT(t) {
+                        if(t === 'recyclable') {
+                            return 'Reciclável';
+                        } else if(t === 'reutilable') {
+                            return 'Reutilizável';
+                        } else {
+                            return '';
+                        }
+                    }
+                    return (
+                        <span>
+                            {tags.map(tag => <Tag color="blue" key={tag}>{tagT(tag)}</Tag>)}
+                        </span>
+                    )
+                },
+                filters: this.state.filters,
+                filteredValue: this.state.filteredInfo.tags || null,
+                onFilter: (value, record) => {
+                    console.log(value)
+                    return record.tags.includes(value)
+                },
             }, {
                 title: 'Ação',
                 key: 'action',
@@ -179,7 +202,7 @@ class TypesSolidWastePage extends Component {
                         <FormItem {...formItemLayout} label="Nome">
                             {getFieldDecorator('name', {
                                 rules: [{
-                                    required: true, message: 'Por favor digite o nome do tipo de residuo',
+                                    required: true, message: 'Por favor digite o nome do tipo de resíduo',
                                 }],
                             })(
                                 <Input />
@@ -189,7 +212,7 @@ class TypesSolidWastePage extends Component {
                         <FormItem {...formItemLayout} label="Descrição">
                             {getFieldDecorator('description', {
                                 rules: [{
-                                    required: true, message: 'Por favor digite a descrição do tipo de resí  duo',
+                                    required: true, message: 'Por favor digite a descrição do tipo de resíduo',
                                 }],
                             })(
                                 <Input />
@@ -202,7 +225,7 @@ class TypesSolidWastePage extends Component {
                                     required: true, message: 'Por favor selecione uma cor para este tipo de resíduo',
                                 }],
                             })(
-                                <Input type='color' onChange={(e) => { console.log(e.target.value) }} />
+                                <Input type='color' onChange={(e) => { }} />
                             )}
                         </FormItem>
 
@@ -216,7 +239,7 @@ class TypesSolidWastePage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} bordered dataSource={this.state.typesSolidWaste} scroll={window.innerWidth <= 600 ? { x: 900 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} onChange={this.handleChangeTable} bordered dataSource={this.state.typesSolidWaste} scroll={window.innerWidth <= 600 ? { x: 900 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

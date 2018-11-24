@@ -1,7 +1,7 @@
 export default (data) => ({
     content: [
         {
-            text: `Relatório de coletas realizadas entre ${data.startDate} - ${data.endDate}\n\n`,
+            text: `Coletas realizadas entre ${data.startDate} - ${data.endDate}\n\n`,
             style: 'header'
         },
         {

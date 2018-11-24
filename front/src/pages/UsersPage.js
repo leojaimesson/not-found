@@ -35,13 +35,11 @@ class UsersPage extends Component {
             okText: 'Excluir',
             onOk: async () => {
                 const response = await this.userClient.remove(idUser);
-                console.log(response)
                 this.setState({
                     users: this.state.users.filter((user) => user.key !== response.data._id)
                 })
             }
         });
-        console.log(idUser)
     }
 
     showModal = () => {
@@ -67,13 +65,12 @@ class UsersPage extends Component {
                 this.setState({
                     modalVisible: false,
                 });
+                this.props.form.resetFields();
             }
         });
-        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             modalVisible: false,
         });

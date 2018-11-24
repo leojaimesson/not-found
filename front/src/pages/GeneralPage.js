@@ -42,11 +42,8 @@ class GeneralPage extends Component {
 
         const start = new Date(2018, 0, 1, 0, 0, 0);
         const end = new Date(2018, 11, 31, 11, 59, 59);
-        console.log(end)
-
 
         const responseTimeLine = (await this.dataClient.getWastesByPeriodFull(start, end)).data.reduce((acc, current) => [...acc, ...current.data], []).map((value) => {
-            console.log(value)
             value.collectionDate = new Date(value.collectionDate);
             value.collectionDate.setHours(0);
             value.collectionDate.setMinutes(0);
@@ -146,7 +143,7 @@ class GeneralPage extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        const heightBoard = window.innerHeight * 0.70;
+        const heightBoard = window.innerHeight * 0.50;
         return (
             <>
                 <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
@@ -190,10 +187,9 @@ class GeneralPage extends Component {
 
                 <Row gutter={24}>
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Board height={heightBoard}>
+                        <Board>
                             <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Resíduos produzidos em Kg</h3></Divider>
-
-                            <div style={{ height: '80%' }}>
+                            <div style={{ height: `${heightBoard}px` }}>
                                 <ResponsiveBar
                                     margin={{
                                         top: 40,
@@ -214,20 +210,20 @@ class GeneralPage extends Component {
                                     motionStiffness={90}
                                     motionDamping={15}
                                 />
-                                <div style={{ display: 'flex' }}>
-                                    {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{fontSize: '0.65em', marginLeft: '2px'}}>{value.name}</span></div>)}
-                                </div>
+                            </div>
+                            <div>
+                                {this.state.legend.map(value => <div key={`bar-${value.name}`} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', marginLeft: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ marginLeft: '5px' }}>{value.name}</span></div>)}
                             </div>
                         </Board>
                     </Col>
 
                     <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                        <Board height={heightBoard}>
+                        <Board>
                             <Divider orientation="left"><h3 style={{ color: '#618833' }}>Resíduos produzidos em percentual</h3></Divider>
 
 
 
-                            <div style={{ height: '80%' }}>
+                            <div style={{ height: `${heightBoard}px` }}>
                                 <ResponsivePie
                                     margin={{
                                         top: 40,
@@ -245,37 +241,29 @@ class GeneralPage extends Component {
                                     radialLabelsLinkStrokeWidth={3}
                                     radialLabelsTextColor="inherit:darker(1.2)"
                                 />
-                                <div style={{ display: 'flex' }}>
-                                    {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{fontSize: '0.65em', marginLeft: '2px'}}>{value.name}</span></div>)}
-                                </div>
+
+                            </div>
+                            <div>
+                                {this.state.legend.map(value => <div key={`pie-${value.name}`} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', marginLeft: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ marginLeft: '5px' }}>{value.name}</span></div>)}
                             </div>
                         </Board>
                     </Col>
 
                     <Col xs={{ span: 24 }} lg={{ span: 24 }}>
-                        <Board height={window.innerHeight * 0.45}>
+                        <Board>
                             <Divider orientation="left"><h3 style={{ color: '#618833' }}>Foram coletados {this.state.totalKg.toFixed(2)} Kg de residuos este ano</h3></Divider>
-
-
-                            <div style={{ height: '80%' }}>
+                            <div style={{ height: `${heightBoard}px` }}>
                                 <ResponsiveCalendar
                                     margin={{
                                         top: 50,
                                         right: 10,
-                                        bottom: 10,
+                                        bottom: 0,
                                         left: 50
                                     }}
                                     from="2018-01-01T03:00:00.000Z"
                                     to="2018-12-31T03:00:00.000Z"
                                     data={this.state.timeLine}
-
                                     emptyColor="#eeeeee"
-                                    colors={[
-                                        "#61cdbb",
-                                        "#97e3d5",
-                                        "#e8c1a0",
-                                        "#f47560"
-                                    ]}
                                     yearSpacing={40}
                                     monthBorderColor="#ffffff"
                                     monthLegendOffset={10}
@@ -285,7 +273,7 @@ class GeneralPage extends Component {
                                         {
                                             "anchor": "bottom-right",
                                             "direction": "row",
-                                            "translateY": 0,
+                                            "translateY": -80,
                                             "itemCount": 4,
                                             "itemWidth": 34,
                                             "itemHeight": 36,

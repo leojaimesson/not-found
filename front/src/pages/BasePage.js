@@ -46,8 +46,8 @@ export default class BasePage extends Component {
                 breakpoint="lg"
                 collapsedWidth="0"
                 width={250}
-                onBreakpoint={(broken) => { console.log(broken); }}
-                onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
+                onBreakpoint={(broken) => { }}
+                onCollapse={(collapsed, type) => { }}
                 style={{ background: '#fff' }}
             >
                 <div className="logo">NotFound</div>

@@ -6,7 +6,7 @@ import { Icon, Menu } from 'antd';
 
 import BasePage from './pages/BasePage';
 import GeneralPage from './pages/GeneralPage';
-import UsersPage from './pages/UsersPage';
+// import UsersPage from './pages/UsersPage';
 import TypesSolidWastePage from './pages/TypesSolidWastePage';
 import SolidWasteCollectedPage from './pages/SolidWasteCollectedPage';
 import AnalyzeCollectedWastesPage from './pages/AnalyzeCollectedWastesPage';
@@ -30,10 +30,10 @@ export default class Routes extends Component {
                             <Icon type="home" />
                             <Link to="/" className="nav-text">Visão Geral</Link>
                         </Menu.Item>
-                        <Menu.Item key="2" onClick={() => {this.setState({titlePage: 'Usuários'})}}>
+                        {/* <Menu.Item key="2" onClick={() => {this.setState({titlePage: 'Usuários'})}}>
                             <Icon type="user" />
                             <Link to="/usuarios" className="nav-text">Usuários</Link>
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item key="3" onClick={() => {this.setState({titlePage: 'Tipos de Resíduos Sólidos'})}}>
                             <Icon type="tag" />
                             <Link to="/tipos-residuos-solidos" className="nav-text">Tipos de Resíduos Sólidos</Link>
@@ -56,7 +56,7 @@ export default class Routes extends Component {
                 content={
                     <>
                         <Route exact path="/" component={GeneralPage} />
-                        <Route exact path="/usuarios" component={UsersPage} />
+                        {/* <Route exact path="/usuarios" component={UsersPage} /> */}
                         <Route exact path="/tipos-residuos-solidos" component={TypesSolidWastePage} />
                         <Route exact path="/coletas" component={SolidWasteCollectedPage} />
                         <Route exact path="/analises" component={AnalyzeCollectedWastesPage} />

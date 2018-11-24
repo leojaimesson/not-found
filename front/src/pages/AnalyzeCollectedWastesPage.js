@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import moment from 'moment';
+
 import { Row, Col, Button, Form, Select, InputNumber, DatePicker, Divider } from 'antd';
 
 import Board from '../components/board/Board';
@@ -7,6 +9,8 @@ import Board from '../components/board/Board';
 import { ResponsiveBar } from '@nivo/bar';
 
 import { ResponsiveStream } from '@nivo/stream';
+
+import { ResponsiveCalendar } from '@nivo/calendar';
 
 import { ResponsivePie } from '@nivo/pie';
 
@@ -35,6 +39,7 @@ class AnalyzeCollectedWastesPage extends Component {
             streamKeys: [],
             streamColors: [],
             legend: [],
+            timeLine: []
         }
     }
 
@@ -42,38 +47,8 @@ class AnalyzeCollectedWastesPage extends Component {
 
         const responseType = await this.typeSolidWasteClient.getAll();
 
-        const response = await this.dataClient.getAllWasteByPeriod('WEEK', 1);
-
-        const responseFiltered = response.data.filter((value) => value.data > 0);
-
-        const totalKg = responseFiltered.reduce((acc, current) => acc + current.data, 0);
-
-        const barDatas = responseFiltered.map(value => {
-            const obj = {};
-            obj[value.name] = value.data;
-            obj['residuos'] = value.name;
-            return obj;
-        });
-        const barKeys = responseFiltered.map(value => value.name);
-        const barColors = responseFiltered.map(value => value.color);
-
-        const pieData = responseFiltered.map(value => {
-            const obj = {};
-            obj.id = value.name;
-            obj.label = value.name;
-            obj.value = parseFloat(((value.data / totalKg) * 100).toFixed(2));
-            return obj;
-        });
-        const legend = responseFiltered.map(value => ({ name: value.name, color: value.color }));
-
         this.setState({
-            datas: barDatas || [],
-            colors: barColors,
-            keys: barKeys,
-            pieData: pieData,
-            totalKg: totalKg,
             typesSolidWaste: responseType.data,
-            legend: legend
         });
     }
 
@@ -109,6 +84,7 @@ class AnalyzeCollectedWastesPage extends Component {
 
                 if (endDate && startDate) {
                     if (type !== '') {
+
                         const response = await this.dataClient.getWastesByPeriodFull(start, end, type);
 
                         const responseFiltered = response.data[0].data.reduce((acc, current) => acc + current.quantityCollected, 0);
@@ -120,6 +96,31 @@ class AnalyzeCollectedWastesPage extends Component {
                             obj[response.data[0].name] = value.quantityCollected;
                             return obj;
                         });
+
+
+
+                        const rs = {};
+
+                        response.data[0].data.forEach(value => {
+                            value.collectionDate = new Date(value.collectionDate);
+                            value.collectionDate.setHours(0);
+                            value.collectionDate.setMinutes(0);
+                            value.collectionDate.setSeconds(0);
+
+                            if (!rs[value.collectionDate]) {
+                                rs[value.collectionDate] = {
+                                    day: moment(value.collectionDate).format('YYYY-MM-DD'),
+                                    value: value.quantityCollected
+                                }
+                            } else {
+                                rs[value.collectionDate].value += value.quantityCollected;
+                            }
+                        });
+
+                        const rs2 = Object.keys(rs).map(function (key) {
+                            return rs[key];
+                        });
+
                         const streamKeys = []
                         streamKeys.push(response.data[0].name)
                         const streamColors = []
@@ -128,7 +129,8 @@ class AnalyzeCollectedWastesPage extends Component {
                             streamDatas: x,
                             streamKeys: streamKeys,
                             streamColors: streamColors,
-                            totalKg: totalKg
+                            totalKg: totalKg,
+                            timeLine: rs2
                         });
                     } else {
 
@@ -155,12 +157,42 @@ class AnalyzeCollectedWastesPage extends Component {
                             return obj;
                         });
 
+                        const res = await this.dataClient.getWastesByPeriodFull(start, end);
+                        let rs2 = [];
+                        if (res) {
+                            const responseTimeLine = res.data.reduce((acc, current) => [...acc, ...current.data], []).map((value) => {
+                                value.collectionDate = new Date(value.collectionDate);
+                                value.collectionDate.setHours(0);
+                                value.collectionDate.setMinutes(0);
+                                value.collectionDate.setSeconds(0);
+                                return value;
+                            });
+
+                            const rs = {};
+
+                            responseTimeLine.forEach(value => {
+                                if (!rs[value.collectionDate]) {
+                                    rs[value.collectionDate] = {
+                                        day: moment(value.collectionDate).format('YYYY-MM-DD'),
+                                        value: value.quantityCollected
+                                    }
+                                } else {
+                                    rs[value.collectionDate].value += value.quantityCollected;
+                                }
+                            });
+
+                            rs2 = Object.keys(rs).map(function (key) {
+                                return rs[key];
+                            });
+                        }
+
                         this.setState({
                             datas: barDatas || [],
                             colors: barColors,
                             keys: barKeys,
                             pieData: pieData,
                             totalKg: totalKg,
+                            timeLine: rs2
                         });
                     }
                 } else {
@@ -176,6 +208,27 @@ class AnalyzeCollectedWastesPage extends Component {
 
                         const responseFiltered = response.data[0].data.reduce((acc, current) => acc + current.quantityCollected, 0);
 
+                        const rs = {};
+
+                        response.data[0].data.forEach(value => {
+                            value.collectionDate = new Date(value.collectionDate);
+                            value.collectionDate.setHours(0);
+                            value.collectionDate.setMinutes(0);
+                            value.collectionDate.setSeconds(0);
+
+                            if (!rs[value.collectionDate]) {
+                                rs[value.collectionDate] = {
+                                    day: moment(value.collectionDate).format('YYYY-MM-DD'),
+                                    value: value.quantityCollected
+                                }
+                            } else {
+                                rs[value.collectionDate].value += value.quantityCollected;
+                            }
+                        });
+
+                        const rs2 = Object.keys(rs).map(function (key) {
+                            return rs[key];
+                        });
 
                         const streamKeys = []
                         streamKeys.push(response.data[0].name)
@@ -185,7 +238,8 @@ class AnalyzeCollectedWastesPage extends Component {
                             streamDatas: x,
                             streamKeys: streamKeys,
                             streamColors: streamColors,
-                            totalKg: responseFiltered
+                            totalKg: responseFiltered,
+                            timeLine: rs2,
                         });
                     } else {
                         const response = await this.dataClient.getAllWasteByPeriod(values.period, values.interval);
@@ -210,12 +264,38 @@ class AnalyzeCollectedWastesPage extends Component {
                             return obj;
                         });
 
+                        const responseTimeLine = (await this.dataClient.getAllWasteByPeriodFull(values.period, values.interval)).data.reduce((acc, current) => [...acc, ...current.data], []).map((value) => {
+                            value.collectionDate = new Date(value.collectionDate);
+                            value.collectionDate.setHours(0);
+                            value.collectionDate.setMinutes(0);
+                            value.collectionDate.setSeconds(0);
+                            return value;
+                        });
+
+                        const rs = {};
+
+                        responseTimeLine.forEach(value => {
+                            if (!rs[value.collectionDate]) {
+                                rs[value.collectionDate] = {
+                                    day: moment(value.collectionDate).format('YYYY-MM-DD'),
+                                    value: value.quantityCollected
+                                }
+                            } else {
+                                rs[value.collectionDate].value += value.quantityCollected;
+                            }
+                        });
+
+                        const rs2 = Object.keys(rs).map(function (key) {
+                            return rs[key];
+                        });
+
                         this.setState({
                             datas: barDatas || [],
                             colors: barColors,
                             keys: barKeys,
                             pieData: pieData,
-                            totalKg: totalKg
+                            totalKg: totalKg,
+                            timeLine: rs2
                         });
                     }
 
@@ -376,6 +456,44 @@ class AnalyzeCollectedWastesPage extends Component {
                                     </div>
                                 </Board>
                             </Col>
+
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                <Board>
+                                    <Divider orientation="left"><h3 style={{ color: '#618833' }}>Resíduos coletados durante o ano</h3></Divider>
+
+                                    <div style={{ height: `${window.innerHeight * 0.45}px` }}>
+                                        <ResponsiveCalendar
+                                            margin={{
+                                                top: 50,
+                                                right: 10,
+                                                bottom: 10,
+                                                left: 50
+                                            }}
+                                            from="2018-01-01T03:00:00.000Z"
+                                            to="2018-12-31T03:00:00.000Z"
+                                            data={this.state.timeLine}
+
+                                            emptyColor="#eeeeee"
+                                            yearSpacing={40}
+                                            monthBorderColor="#ffffff"
+                                            monthLegendOffset={10}
+                                            dayBorderWidth={2}
+                                            dayBorderColor="#ffffff"
+                                            legends={[
+                                                {
+                                                    "anchor": "bottom-right",
+                                                    "direction": "row",
+                                                    "translateY": -40,
+                                                    "itemCount": 4,
+                                                    "itemWidth": 34,
+                                                    "itemHeight": 36,
+                                                    "itemDirection": "top-to-bottom"
+                                                }
+                                            ]}
+                                        />
+                                    </div>
+                                </Board>
+                            </Col>
                         </Row>
                     </>
                 }
@@ -489,15 +607,15 @@ class AnalyzeCollectedWastesPage extends Component {
                                 </Board>
                             </Col>
                             <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={window.innerHeight * 0.5}>
+                                <Board>
                                     <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Residuos produzidos em Kg</h3></Divider>
 
-                                    <div style={{ height: '80%' }}>
+                                    <div style={{ height: `${window.innerHeight * 0.55}px` }}>
                                         <ResponsiveBar
                                             margin={{
-                                                top: 40,
+                                                top: 12,
                                                 right: 50,
-                                                bottom: 40,
+                                                bottom: 12,
                                                 left: 50
                                             }}
                                             axisBottom={null}
@@ -511,23 +629,23 @@ class AnalyzeCollectedWastesPage extends Component {
                                             labelSkipHeight={16}
 
                                         />
-                                        <div style={{ display: 'flex' }}>
-                                            {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ fontSize: '0.65em', marginLeft: '2px' }}>{value.name}</span></div>)}
-                                        </div>
+                                    </div>
+                                    <div style={{marginTop: '20px'}}>
+                                        {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', marginLeft: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ marginLeft: '5px' }}>{value.name}</span></div>)}
                                     </div>
                                 </Board>
                             </Col>
 
                             <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                                <Board height={window.innerHeight * 0.5}>
+                                <Board >
                                     <Divider orientation="left"> <h3 style={{ color: '#618833' }}>Residuos produzidos em Kg</h3></Divider>
 
-                                    <div style={{ height: '80%' }}>
+                                    <div style={{ height: `${window.innerHeight * 0.55}px` }}>
                                         <ResponsivePie
                                             margin={{
-                                                top: 40,
+                                                top: 10,
                                                 right: 50,
-                                                bottom: 55,
+                                                bottom: 30,
                                                 left: 50
                                             }}
                                             data={this.state.pieData}
@@ -540,9 +658,46 @@ class AnalyzeCollectedWastesPage extends Component {
                                             radialLabelsLinkStrokeWidth={3}
                                             radialLabelsTextColor="inherit:darker(1.2)"
                                         />
-                                        <div style={{ display: 'flex' }}>
-                                            {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{ fontSize: '0.65em', marginLeft: '2px' }}>{value.name}</span></div>)}
-                                        </div>
+                                    </div>
+                                    <div style={{marginTop: '20px'}}>
+                                        {this.state.legend.map(value => <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px', marginLeft: '10px' }}><div style={{ height: '10px', width: '10px', background: value.color }} /><span style={{  marginLeft: '5px' }}>{value.name}</span></div>)}
+                                    </div>
+                                </Board>
+                            </Col>
+                            <Col xs={{ span: 24 }} lg={{ span: 24 }}>
+                                <Board>
+                                    <Divider orientation="left"><h3 style={{ color: '#618833' }}>Resíduos coletados durante o ano</h3></Divider>
+
+                                    <div style={{ height: `${window.innerHeight * 0.45}px` }}>
+                                        <ResponsiveCalendar
+                                            margin={{
+                                                top: 50,
+                                                right: 10,
+                                                bottom: 10,
+                                                left: 50
+                                            }}
+                                            from="2018-01-01T03:00:00.000Z"
+                                            to="2018-12-31T03:00:00.000Z"
+                                            data={this.state.timeLine}
+
+                                            emptyColor="#eeeeee"
+                                            yearSpacing={40}
+                                            monthBorderColor="#ffffff"
+                                            monthLegendOffset={10}
+                                            dayBorderWidth={2}
+                                            dayBorderColor="#ffffff"
+                                            legends={[
+                                                {
+                                                    "anchor": "bottom-right",
+                                                    "direction": "row",
+                                                    "translateY": -40,
+                                                    "itemCount": 4,
+                                                    "itemWidth": 34,
+                                                    "itemHeight": 36,
+                                                    "itemDirection": "top-to-bottom"
+                                                }
+                                            ]}
+                                        />
                                     </div>
                                 </Board>
                             </Col>

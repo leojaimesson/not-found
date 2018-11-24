@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Table, Modal, Row, Col, Button, Form, Input, Select, DatePicker } from 'antd';
+import { Table, Modal, Row, Col, Button, Form, Select, DatePicker, InputNumber } from 'antd';
 
 import moment from 'moment';
 
 import SolidWasteCollectedClient from '../api/TypeSolidWasteClient';
 import TypeSolidWasteClient from '../api/TypeSolidWasteClient';
 import DataList from '../helpers/DataList';
+import DataFilters from '../helpers/DataFilters';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,6 +24,9 @@ class SolidWasteCollectedPage extends Component {
             isReutilable: false,
             solidsWasteCollected: [],
             typesSolidWaste: [],
+            filters: [],
+            filteredInfo: {},
+            sortedInfo: {}
         };
     }
 
@@ -32,7 +36,8 @@ class SolidWasteCollectedPage extends Component {
 
         this.setState({
             solidsWasteCollected: DataList.toSolidWasteCollectedData(responseCollected.data).reverse(),
-            typesSolidWaste: responseType.data
+            typesSolidWaste: responseType.data,
+            filters: DataFilters.toTypesSolidWasteFiltersData(responseType.data)
         });
     }
 
@@ -71,14 +76,15 @@ class SolidWasteCollectedPage extends Component {
                     solidsWasteCollected: [{
                         key: response.data._id,
                         typeWasted: response.data.typeWasted.name,
+                        color: response.data.typeWasted.color,
                         collectionDate: moment(new Date(response.data.collectionDate)).format('DD/MM/YYYY'),
                         quantityCollected: response.data.quantityCollected
                     }, ...this.state.solidsWasteCollected],
                     modalVisible: false,
                 })
+                this.props.form.resetFields();
             }
         });
-        this.props.form.resetFields();
     }
 
     handleCancel = (e) => {
@@ -99,9 +105,17 @@ class SolidWasteCollectedPage extends Component {
         })
     }
 
+    handleChangeTable = (pagination, filters, sorter) => {
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    }
+
     render = () => {
 
         const { getFieldDecorator } = this.props.form;
+
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -113,30 +127,54 @@ class SolidWasteCollectedPage extends Component {
             },
         };
 
-        const columns = [{
-            title: 'Data',
-            dataIndex: 'collectionDate',
-            key: 'collectionDate',
-            width: 150
-        }, {
-            title: 'Total coletado',
-            dataIndex: 'quantityCollected',
-            key: 'quantityCollected',
-            width: 200,
-            render: (text, record) => (
-                `${text} Kg`
-            ),
-        }, {
-            title: 'Tipo',
-            dataIndex: 'typeWasted',
-            key: 'typeWasted'
-        }, {
-            title: 'Ação',
-            key: 'acti  on',
-            render: (text, record) => (
-                <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
-            ),
-        }];
+        const columns = [
+            {
+                title: '',
+                dataIndex: 'color',
+                key: 'color',
+                width: 20,
+                render: color => (
+                    <div style={{ width: '10px', height: '10px', background: color }}></div>
+                )
+            }, {
+                title: 'Data',
+                dataIndex: 'collectionDate',
+                key: 'collectionDate',
+                width: 150,
+                sorter: (a, b) => {
+                    const firstSplit = a.collectionDate.split('/');
+                    const secondSplit = b.collectionDate.split('/');
+
+                    const first = new Date(parseInt(firstSplit[2]), parseInt(firstSplit[1]) - 1, parseInt(firstSplit[0]));
+                    const second = new Date(parseInt(secondSplit[2]), parseInt(secondSplit[1]) - 1, parseInt(secondSplit[0]));
+
+                    return first - second;
+                },
+                sortOrder: this.state.sortedInfo.columnKey === 'collectionDate' && this.state.sortedInfo.order,
+            }, {
+                title: 'Total coletado',
+                dataIndex: 'quantityCollected',
+                key: 'quantityCollected',
+                width: 200,
+                render: (text, record) => (
+                    `${text} Kg`
+                ),
+                sorter: (a, b) => a.quantityCollected - b.quantityCollected,
+                sortOrder: this.state.sortedInfo.columnKey === 'quantityCollected' && this.state.sortedInfo.order,
+            }, {
+                title: 'Tipo',
+                dataIndex: 'typeWasted',
+                key: 'typeWasted',
+                filters: this.state.filters,
+                filteredValue: this.state.filteredInfo.typeWasted || null,
+                onFilter: (value, record) => record.typeWasted.includes(value),
+            }, {
+                title: 'Ação',
+                key: 'acti  on',
+                render: (text, record) => (
+                    <Button type='danger' icon="delete" onClick={this.modalExcluir.bind(this, text.key)}></Button>
+                ),
+            }];
 
         return (
             <>
@@ -170,7 +208,7 @@ class SolidWasteCollectedPage extends Component {
                                     required: true, message: 'Por favor informe a quantidade coletada',
                                 }],
                             })(
-                                <Input />
+                                <InputNumber min={0} style={{width: '100%'}}/>,
                             )}
                         </FormItem>
 
@@ -186,7 +224,7 @@ class SolidWasteCollectedPage extends Component {
                         </FormItem>
                     </Form>
                 </Modal>
-                <Table columns={columns} bordered dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 600 ? { x: 1000 } : undefined} style={{ background: "white" }} />
+                <Table columns={columns} onChange={this.handleChangeTable} bordered dataSource={this.state.solidsWasteCollected} scroll={window.innerWidth <= 600 ? { x: 1000 } : undefined} style={{ background: "white" }} />
             </>
         );
     }

@@ -28,6 +28,8 @@ class ReportPage extends Component {
             dataTables: [],
             total: 0,
             dataDoc: {},
+            filteredInfo: {},
+            sortedInfo: {}
         };
     }
 
@@ -40,7 +42,6 @@ class ReportPage extends Component {
     }
 
     handleSubmit = (e) => {
-        console.log(e.target)
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
@@ -51,16 +52,25 @@ class ReportPage extends Component {
                 } = values;
 
                 if (endDate && startDate) {
-                    const response = await this.dataClient.getWastesByPeriodFull(startDate, endDate, type);
+                    const start = new Date(startDate);
+                    start.setHours(0)
+                    start.setMinutes(0);
+                    start.setSeconds(0);
 
-                    const result = response.data.map((value) => DataList.toSolidWasteCollectedData(value.data))
+                    const end = new Date(endDate);
+                    end.setHours(23)
+                    end.setMinutes(59);
+                    end.setSeconds(59);
 
-                    const result2 = response.data.map((value) => DataDoc.toSolidWasteCollectedData(value.data)).reduce((acc, current) =>[...acc, ...current], []);
-                    
+                    const response = await this.dataClient.getWastesByPeriodFull(start, end, type);
+
+                    const result = response.data.map((value) => DataList.toSolidWasteCollectedData(value.data)).reduce((acc, current) => [...acc, ...current]);
+
+                    const result2 = result.map((value) => {
+                        return DataDoc.toSolidWasteCollectedData(value);
+                    });
+
                     const total = result2.reduce((acc, current) => acc + current[1], 0);
-
-                    console.log(startDate.format('DD/MM/YYYY'));
-
 
                     this.setState({
                         dataTables: result,
@@ -77,15 +87,41 @@ class ReportPage extends Component {
         });
     }
 
+    handleChangeTable = (pagination, filters, sorter) => {
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    }
+
     render = () => {
 
         const { getFieldDecorator } = this.props.form;
 
-        const columns = [{
+        const columns = [
+            {
+                title: '',
+                dataIndex: 'color',
+                key: 'color',
+                width: 20,
+                render: color => (
+                    <div style={{ width: '10px', height: '10px', background: color }}></div>
+                )
+            }, {
             title: 'Data',
             dataIndex: 'collectionDate',
             key: 'collectionDate',
-            width: 150
+            width: 150,
+            sorter: (a, b) => {
+                const firstSplit = a.collectionDate.split('/');
+                const secondSplit = b.collectionDate.split('/');
+
+                const first = new Date(parseInt(firstSplit[2]), parseInt(firstSplit[1]) - 1, parseInt(firstSplit[0]));
+                const second = new Date(parseInt(secondSplit[2]), parseInt(secondSplit[1]) - 1, parseInt(secondSplit[0]));
+
+                return first - second;
+            },
+            sortOrder: this.state.sortedInfo.columnKey === 'collectionDate' && this.state.sortedInfo.order,
         }, {
             title: 'Total coletado',
             dataIndex: 'quantityCollected',
@@ -94,6 +130,8 @@ class ReportPage extends Component {
             render: (text, record) => (
                 `${text} Kg`
             ),
+            sorter: (a, b) => a.quantityCollected - b.quantityCollected,
+            sortOrder: this.state.sortedInfo.columnKey === 'quantityCollected' && this.state.sortedInfo.order,
         }, {
             title: 'Tipo',
             dataIndex: 'typeWasted',
@@ -190,7 +228,7 @@ class ReportPage extends Component {
                         }}>
                             <Row type="flex" justify="space-between" align="middle" gutter={24} style={{ background: 'white', margin: '0px', padding: '10px 0px' }}>
                                 <Col xs={{ span: 24 }} lg={{ span: 4 }} style={{ padding: '0px' }}>
-                                    <h3 style={{margin: '0px'}}>Total Coletado</h3>
+                                    <h3 style={{ margin: '0px' }}>Total Coletado</h3>
                                 </Col>
 
                                 <Col xs={{ span: 24 }} lg={{ span: 3 }} style={{ padding: '0px' }}>
@@ -206,7 +244,7 @@ class ReportPage extends Component {
                                 </Col>
                             </Row>
                         </div>
-                        {this.state.dataTables.map((value, index) => <Table columns={columns} bordered dataSource={value} scroll={window.innerWidth <= 600 ? { x: 700 } : undefined} style={{ background: "white", marginBottom: '20px' }} />)}
+                        <Table columns={columns} onChange={this.handleChangeTable} bordered dataSource={this.state.dataTables} scroll={window.innerWidth <= 600 ? { x: 700 } : undefined} style={{ background: "white", marginBottom: '20px' }} />
                     </div>
                 }
 

@@ -29,6 +29,7 @@ const toSolidWasteCollectedData = (solidWasteCollected) => solidWasteCollected.m
     key: solidWasteCollected._id,
     typeWasted: solidWasteCollected.typeWasted.name,
     quantityCollected: solidWasteCollected.quantityCollected,
+    color: solidWasteCollected.typeWasted.color,
     collectionDate: moment(new Date(solidWasteCollected.collectionDate)).format('DD/MM/YYYY'),
 }));
 

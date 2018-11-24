@@ -1,12 +1,10 @@
-import moment from 'moment';
-
-const toSolidWasteCollectedData = (solidWasteCollected) => solidWasteCollected.map((solidWasteCollected) => {
+const toSolidWasteCollectedData = (value) =>  {
     const result = [];
-    result.push(solidWasteCollected.typeWasted.name);
-    result.push(solidWasteCollected.quantityCollected)
-    result.push(moment(new Date(solidWasteCollected.collectionDate)).format('DD/MM/YYYY'))
+    result.push(value.typeWasted);
+    result.push(value.quantityCollected);
+    result.push(value.collectionDate);
     return result;
-});
+};
 
 export default {
     toSolidWasteCollectedData,
