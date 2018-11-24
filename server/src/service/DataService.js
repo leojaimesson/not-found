@@ -82,7 +82,6 @@ const getWastesDataByPeriod = async (startDate, endDate, idTypeSolidWaste) => {
     const types = idTypeSolidWaste ? await TypeSolidWaste.find({ _id: idTypeSolidWaste }) : await TypeSolidWaste.find();
     const result = [];
 
-    console.log('start', startDate);
     for (const type of types) {
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
@@ -103,7 +102,6 @@ const getWastesDataByPeriod = async (startDate, endDate, idTypeSolidWaste) => {
 
 const getWastesDataByPeriodFull = async (startDate, endDate, idTypeSolidWaste) => {
   try {
-    console.log("AQUIIII",startDate, endDate, idTypeSolidWaste);
     const types = idTypeSolidWaste ? await TypeSolidWaste.find({ _id: idTypeSolidWaste }) : await TypeSolidWaste.find();
     const result = [];
     for (const type of types) {
@@ -131,17 +129,13 @@ const getWasteDataByPeriod = async (period, interval, idTypeSolidWaste) => {
 
     for (let i = 1; i <= interval; i++) {
 
-      console.log("Now", now);
       const date = subPeriod(now, period, i);
       const start = subPeriod(now, period, i);
       const end = now;
-      console.log("Start", start);
-      console.log("End", end);
       const filtered = await SolidWasteCollected.find({
         typeWasted: type._id,
         collectionDate: { $gte: start, $lte: end },
       }).sort('collectionDate').exec();
-      console.log(filtered)
       result.push({
         name: `${start.getDay() + 1}/${start.getMonth() + 1}/${start.getYear()}`,
         color: type.color,

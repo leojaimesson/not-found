@@ -1,4 +1,5 @@
 import TypeSolidWaste from '../document/TypeSolidWaste';
+import SolidWasteCollected from '../document/SolidWasteCollected';
 import InternalError from '../exception/InternalError';
 import MissingPropertiesError from '../exception/MissingPropertiesError';
 import TypeSolidWasteNotFoundError from '../exception/TypeSolidWasteNotFoundError';
@@ -35,6 +36,10 @@ export default {
 
   delete: async (id) => {
     try {
+      await SolidWasteCollected.find({ typeWasted: id }).remove().exec();
+      // for(const vai of tnc) {
+      //   SolidWasteCollected.remove({_id: vai._id})
+      // }
       const typeSolidWaste = await TypeSolidWaste.findByIdAndRemove(id).exec();
       if (typeSolidWaste != null) {
         return typeSolidWaste;

@@ -27,18 +27,4 @@ const TypeSolidWasteSchema = new mongoose.Schema({
   },
 });
 
-// https://stackoverflow.com/questions/14348516/cascade-style-delete-in-mongoose
-TypeSolidWasteSchema.pre('remove', function (next) {
-  try {
-    this.model('SolidWasteCollected').remove({
-      typeWasted: this._id
-    }, next);
-    next();
-  } catch (error) {
-    throw error;
-  } finally {
-    next();
-  }
-});
-
 export default mongoose.model('TypeSolidWaste', TypeSolidWasteSchema);
