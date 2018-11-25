@@ -1,0 +1,49 @@
+/* Layout */
+
+.ant-layout-sider-children .logo {
+    height: 32px;
+    background: rgba(255,255,255,.2);
+    margin: 16px 24px;
+    display: flex;
+    align-items: center;
+    font-weight: bolder;
+    font-size: 1.5em;
+    color: #618833;
+}
+
+.trigger {
+    background: #618833;
+    border-radius: 4px;
+    padding: 9px;
+}
+
+.ant-table-wrapper ul.ant-pagination {
+    margin: 16px 10px;
+}
+
+.ant-layout-sider .ant-layout-sider-zero-width-trigger {
+    display: none;
+}
+
+.ant-menu .ant-menu-item > a {
+    display: inline;
+}
+.ant-menu .ant-menu-item-selected > a,
+.ant-menu .ant-menu-item-selected {
+    color: #8bc34a;
+}
+
+.ant-menu .ant-menu-item-active > a,
+.ant-menu .ant-menu-item-active {
+    color: #8bc34a;
+}
+
+.ant-menu-vertical .ant-menu-item:after, .ant-menu-vertical-left .ant-menu-item:after, .ant-menu-vertical-right .ant-menu-item:after, .ant-menu-inline .ant-menu-item:after {
+    border-right: 3px solid #8bc34a;
+}
+
+@media (min-width: 993px) {
+	.hide, .trigger {
+        display: none;
+    }
+}
