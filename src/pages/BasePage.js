@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Layout, Icon, Drawer, Row, Col } from 'antd';
+import { Layout, Icon, Row, Col } from 'antd';
 
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -29,19 +29,6 @@ export default class BasePage extends React.PureComponent {
 
     render = () => (
         <Layout style={{ height: '100%', overflow: 'auto' }}>
-            <Drawer
-                title={<span style={{
-                    fontWeight: 'bolder',
-                    fontSize: '1.5em',
-                    color: '#618833'
-                }}>NotFound</span>}
-                placement={this.state.placement}
-                onClose={this.onClose}
-                visible={this.state.visible}
-                style={{ padding: "24px 0px" }}
-            >
-                {this.props.menu}
-            </Drawer>
             <Sider
                 breakpoint="lg"
                 collapsedWidth="0"
