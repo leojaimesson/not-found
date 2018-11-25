@@ -6,7 +6,7 @@ import { Icon, Menu } from 'antd';
 
 import 'antd/es/grid/style/index.css';
 import 'antd/es/button/style/index.css';
-// import 'antd/es/form/style/index.css';
+import 'antd/es/form/style/index.css';
 import 'antd/es/select/style/index.css';
 import 'antd/es/input-number/style/index.css';
 // import 'antd/es/input/style/index.css';
