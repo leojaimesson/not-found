@@ -15,10 +15,10 @@ self.__precacheManifest = [
     "revision": "b70fbee7cc5eed5cdec2",
     "url": "/static/css/main.382d386f.chunk.css"
   },
-  {
-    "revision": "60fffe1468f1be2b9d5e",
-    "url": "/static/css/1.217c187d.chunk.css"
-  },
+  // {
+  //   "revision": "60fffe1468f1be2b9d5e",
+  //   "url": "/static/css/1.217c187d.chunk.css"
+  // },
   {
     "revision": "12966b241af53815f2f9d13c113a333c",
     "url": "/index.html"
